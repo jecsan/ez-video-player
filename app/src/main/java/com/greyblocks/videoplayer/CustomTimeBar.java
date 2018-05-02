@@ -217,7 +217,7 @@ public class CustomTimeBar extends View implements TimeBar {
                 int playedAdMarkerColor = a.getInt(R.styleable.DefaultTimeBar_played_ad_marker_color,
                         getDefaultPlayedAdMarkerColor(adMarkerColor));
                 playedPaint.setColor(Color.TRANSPARENT);
-                scrubberPaint.setColor(scrubberColor);
+                scrubberPaint.setColor(Color.RED);
                 bufferedPaint.setColor(Color.TRANSPARENT);
                 unplayedPaint.setColor(Color.TRANSPARENT);
                 adMarkerPaint.setColor(adMarkerColor);
@@ -370,6 +370,7 @@ public class CustomTimeBar extends View implements TimeBar {
                     }
                     update();
                     invalidate();
+                    setScrubPosition();
                     return true;
                 }
                 break;
@@ -543,6 +544,12 @@ public class CustomTimeBar extends View implements TimeBar {
         invalidate();
         for (OnScrubListener listener : listeners) {
             listener.onScrubStop(this, getScrubberPosition(), canceled);
+        }
+    }
+
+    private void setScrubPosition() {
+        for (OnScrubListener listener : listeners) {
+            listener.onScrubStop(this, getScrubberPosition(), false);
         }
     }
 
