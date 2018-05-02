@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
@@ -77,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
     private void initializePlayer() {
         player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(this),
-                new DefaultTrackSelector(), new MaxLoadControl());
+                new DefaultTrackSelector(), new DefaultLoadControl());
 
         playerView.setPlayer(player);
-
+        player.setSeekParameters(SeekParameters.EXACT);
 
 
 

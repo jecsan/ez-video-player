@@ -195,39 +195,59 @@ public final class MaxLoadControl implements LoadControl {
     }
 
     @Override
-    public boolean shouldStartPlayback(long bufferedDurationUs, boolean rebuffering) {
-        long minBufferDurationUs = rebuffering ? bufferForPlaybackAfterRebufferUs : bufferForPlaybackUs;
-        return minBufferDurationUs <= 0
-                || bufferedDurationUs >= minBufferDurationUs
-                || (!prioritizeTimeOverSizeThresholds
-                && allocator.getTotalBytesAllocated() >= targetBufferSize);
+    public long getBackBufferDurationUs() {
+        return 0;
     }
 
     @Override
-    public boolean shouldContinueLoading(long bufferedDurationUs) {
-        boolean targetBufferSizeReached = allocator.getTotalBytesAllocated() >= targetBufferSize;
-        boolean wasBuffering = isBuffering;
-        if (prioritizeTimeOverSizeThresholds) {
-            isBuffering =
-                    bufferedDurationUs < minBufferUs // below low watermark
-                            || (bufferedDurationUs <= maxBufferUs // between watermarks
-                            && isBuffering
-                            && !targetBufferSizeReached);
-        } else {
-            isBuffering =
-                    !targetBufferSizeReached
-                            && (bufferedDurationUs < minBufferUs // below low watermark
-                            || (bufferedDurationUs <= maxBufferUs && isBuffering)); // between watermarks
-        }
-        if (priorityTaskManager != null && isBuffering != wasBuffering) {
-            if (isBuffering) {
-                priorityTaskManager.add(C.PRIORITY_PLAYBACK);
-            } else {
-                priorityTaskManager.remove(C.PRIORITY_PLAYBACK);
-            }
-        }
-        return isBuffering;
+    public boolean retainBackBufferFromKeyframe() {
+        return false;
     }
+
+    @Override
+    public boolean shouldContinueLoading(long bufferedDurationUs, float playbackSpeed) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldStartPlayback(long bufferedDurationUs, float playbackSpeed, boolean rebuffering) {
+        return false;
+    }
+
+//    @Override
+//    public boolean shouldStartPlayback(long bufferedDurationUs, boolean rebuffering) {
+//        long minBufferDurationUs = rebuffering ? bufferForPlaybackAfterRebufferUs : bufferForPlaybackUs;
+//        return minBufferDurationUs <= 0
+//                || bufferedDurationUs >= minBufferDurationUs
+//                || (!prioritizeTimeOverSizeThresholds
+//                && allocator.getTotalBytesAllocated() >= targetBufferSize);
+//    }
+//
+//    @Override
+//    public boolean shouldContinueLoading(long bufferedDurationUs) {
+//        boolean targetBufferSizeReached = allocator.getTotalBytesAllocated() >= targetBufferSize;
+//        boolean wasBuffering = isBuffering;
+//        if (prioritizeTimeOverSizeThresholds) {
+//            isBuffering =
+//                    bufferedDurationUs < minBufferUs // below low watermark
+//                            || (bufferedDurationUs <= maxBufferUs // between watermarks
+//                            && isBuffering
+//                            && !targetBufferSizeReached);
+//        } else {
+//            isBuffering =
+//                    !targetBufferSizeReached
+//                            && (bufferedDurationUs < minBufferUs // below low watermark
+//                            || (bufferedDurationUs <= maxBufferUs && isBuffering)); // between watermarks
+//        }
+//        if (priorityTaskManager != null && isBuffering != wasBuffering) {
+//            if (isBuffering) {
+//                priorityTaskManager.add(C.PRIORITY_PLAYBACK);
+//            } else {
+//                priorityTaskManager.remove(C.PRIORITY_PLAYBACK);
+//            }
+//        }
+//        return isBuffering;
+//    }
 
     /**
      * Calculate target buffer size in bytes based on the selected tracks. The player will try not to
