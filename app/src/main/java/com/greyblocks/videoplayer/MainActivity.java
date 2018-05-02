@@ -33,6 +33,7 @@ import com.google.android.exoplayer2.util.Util;
 * Preload whole video if possible
 * Turns out exoplayer doesn't support instant seek like what iOS does
 * https://github.com/google/ExoPlayer/issues/1399
+* https://github.com/google/ExoPlayer/issues/2882 - faster seek
 *
 * */
 public class MainActivity extends AppCompatActivity {
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 new DefaultTrackSelector(), new MaxLoadControl());
 
         playerView.setPlayer(player);
+
 
 
 
