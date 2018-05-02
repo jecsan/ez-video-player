@@ -17,11 +17,19 @@ import com.google.android.exoplayer2.upstream.AssetDataSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.util.Util;
 
+/*
+* TODO
+* Compress video before getting thumbnails
+* Create cache for video
+* Preload whole video if possible
+*
+*
+* */
 public class MainActivity extends AppCompatActivity {
 
     private SimpleExoPlayerView playerView;
     private SimpleExoPlayer player;
-    private boolean playWhenReady = false;
+    private boolean playWhenReady = true;
     private long playbackPosition;
     private int currentWindow;
 
@@ -43,10 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
         Uri uri = Uri.parse("assets:///sample.mp4");
         MediaSource mediaSource = buildMediaSource(uri);
+
         player.prepare(mediaSource, true, false);
+
 
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(0, 0);
+
     }
 
     private MediaSource buildMediaSource(Uri uri) {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/exo_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:scaleType="fitCenter"
+            android:gravity="center"
+            android:alpha="0.85"
+            android:paddingLeft="12dp"
+            android:drawablePadding="10dp"
+            android:paddingRight="12dp"
+            android:textSize="25sp"
+            tools:text="Review"
+            android:textColor="@android:color/white"
+            style="@style/ExoMediaButton.Play"/>
+
+        <ImageButton
+            android:id="@+id/exo_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:scaleType="fitCenter"
+            android:gravity="center"
+            android:alpha="0.85"
+            android:paddingLeft="12dp"
+            android:drawablePadding="10dp"
+            android:paddingRight="12dp"
+            android:textSize="25sp"
+            tools:text="Review"
+            android:textColor="@android:color/white"
+            style="@style/ExoMediaButton.Pause"/>
+
+    </FrameLayout>
+
+
+
+
+    <com.greyblocks.videoplayer.CustomTimeBar
+        android:id="@id/exo_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:alpha="0.85"
+        android:src="@android:color/transparent"
+        />
+
+
+
+</LinearLayout>
