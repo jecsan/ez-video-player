@@ -352,6 +352,7 @@ public class CustomTimeBar extends View implements TimeBar {
                     scrubPosition = getScrubberPosition();
                     update();
                     invalidate();
+                    setScrubPosition();
                     return true;
                 }
                 break;
@@ -377,7 +378,8 @@ public class CustomTimeBar extends View implements TimeBar {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (scrubbing) {
-                    stopScrubbing(event.getAction() == MotionEvent.ACTION_CANCEL);
+                    scrubbing = false;
+//                    stopScrubbing(event.getAction() == MotionEvent.ACTION_CANCEL);
                     return true;
                 }
                 break;
