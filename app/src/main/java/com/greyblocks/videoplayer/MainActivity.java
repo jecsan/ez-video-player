@@ -31,7 +31,8 @@ import com.google.android.exoplayer2.util.Util;
 * Compress video before getting thumbnails
 * Create cache for video
 * Preload whole video if possible
-*
+* Turns out exoplayer doesn't support instant seek like what iOS does
+* https://github.com/google/ExoPlayer/issues/1399
 *
 * */
 public class MainActivity extends AppCompatActivity {
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializePlayer() {
         player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(this),
-                new DefaultTrackSelector(), new DefaultLoadControl());
+                new DefaultTrackSelector(), new MaxLoadControl());
 
         playerView.setPlayer(player);
 

@@ -32,7 +32,7 @@ public final class MaxLoadControl implements LoadControl {
      * user action such as a seek, in milliseconds.
      */
 //    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_MS = 2500;
-    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_MS = DEFAULT_MIN_BUFFER_MS;
+    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_MS = 0;
 
     /**
      * The default duration of media that must be buffered for playback to resume after a rebuffer,
@@ -40,7 +40,7 @@ public final class MaxLoadControl implements LoadControl {
      * action.
      */
 //    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS  = 5000;
-    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS  = DEFAULT_MIN_BUFFER_MS;
+    public static final int DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS  = 0;
 
     /**
      * The default target buffer size in bytes. When set to {@link C#LENGTH_UNSET}, the load control
