@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Uri uri = Uri.parse("assets:///sample.mp4");
+        Uri uri = Uri.parse("assets:///stream.mp4");
         MediaSource mediaSource = buildMediaSource(uri);
 
         player.prepare(mediaSource, true, false);
