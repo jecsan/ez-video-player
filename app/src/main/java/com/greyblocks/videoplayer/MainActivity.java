@@ -2,7 +2,15 @@ package com.greyblocks.videoplayer;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -14,6 +22,7 @@ import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.Allocator;
 import com.google.android.exoplayer2.upstream.AssetDataSource;
@@ -46,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private int currentWindow;
     private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
     private static final int BUFFER_SEGMENT_COUNT = 160;
+    private ProShotView proShotView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +92,50 @@ public class MainActivity extends AppCompatActivity {
 
         playerView.setPlayer(player);
         player.setSeekParameters(SeekParameters.EXACT);
+        proShotView = playerView.findViewById(R.id.pro_shot_view);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        AspectRatioFrameLayout aspectRatioFrameLayout = playerView.findViewById(R.id.exo_content_frame);
+        final int collapsedWidth = (getResources().getDisplayMetrics().widthPixels- getResources().getDisplayMetrics().widthPixels/10);
+        aspectRatioFrameLayout.getLayoutParams().width = collapsedWidth;
+        aspectRatioFrameLayout.getLayoutParams().height = (displayMetrics.heightPixels-(displayMetrics.heightPixels/6));
+        aspectRatioFrameLayout.requestLayout();
 
+
+        proShotView.getLayoutParams().height = (displayMetrics.heightPixels-(displayMetrics.heightPixels/6));
+
+        proShotView.setProShotAction(new ProShotView.ProShotAction() {
+            @Override
+            public void onExpand() {
+                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
+                resizeWidthAnimation.setDuration(200);
+                playerView.startAnimation(resizeWidthAnimation);
+
+            }
+
+            @Override
+            public void onCollapse() {
+                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame),
+                        collapsedWidth);
+                resizeWidthAnimation.setDuration(200);
+                playerView.startAnimation(resizeWidthAnimation);
+
+            }
+        });
+
+        proShotView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        },2000);
 
 
         Uri uri = Uri.parse("assets:///sample.mp4");
