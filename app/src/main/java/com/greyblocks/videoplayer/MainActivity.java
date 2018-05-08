@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.DashPathEffect;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -127,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         Paint paint = new Paint();
-        paint.setColor(Color.parseColor("#CD5C5C"));
-        paint.setStrokeWidth(3);
+        paint.setColor(Color.parseColor("#01ee18"));
+        paint.setStrokeWidth(4);
 
 
         Display dis = getWindowManager().getDefaultDisplay();
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG,"HEIGHT"+height);
         Log.d(TAG,"WIDTH"+width);
+        paint.setAntiAlias(true);
 
         Integer x1 = normaliseCords(235.83656311035156,1280.0,height);
         Integer y1 = normaliseCords(170.23597717285156,720.0,width);
@@ -155,31 +158,19 @@ public class MainActivity extends AppCompatActivity {
         Integer x2 = normaliseCords(282.8143310546875,1280.0,height);
         Integer y2 = normaliseCords(179.19447326660156,720.0,width);
 
-        Integer x3 = normaliseCords(338.787841796875,1280.0,height);
+        Integer x3 = normaliseCords(354.7802734375,1280.0,height);
         Integer y3 = normaliseCords(153.3143768310547,720.0,width);
 
+        Integer hpX = normaliseCords(354.7802734375,1280.0,height);
+        Integer hpY = normaliseCords(79.65565490722656,720.0,width);
 
-//        Integer x4 = normaliseCords(251.6992645263672,1280.0,height);
-//        Integer y4 = normaliseCords(199.4512176513672,720.0,width);
-//
-//        Integer x5 = normaliseCords(298.5694580078125,1280.0,height);
-//        Integer y5 = normaliseCords(202.43865966796875,720.0,width);
-//
-//        Integer x6 = normaliseCords(297.5722351074219,1280.0,height);
-//        Integer y6 = normaliseCords(149.6605224609375,720.0,width);
-//
-//        Integer x7 = normaliseCords(342.4747314453125,1280.0,height);
-//        Integer y7 = normaliseCords(248.61119079589844,720.0,width);
-//
-//        Integer x8 = normaliseCords(340.48602294921875,1280.0,height);
-//        Integer y8 = normaliseCords(190.6827392578125,720.0,width);
-//
-//        Integer x9 = normaliseCords(311.6495056152344,1280.0,height);
-//        Integer y9 = normaliseCords(152.7296142578125,720.0,width);
+
 
 
         canvas.drawLine(x1,y1,x2,y2,paint);
         canvas.drawLine(x2,y2,x3,y3,paint);
+        drawDashedLines(hpX,hpY,canvas);
+        //canvas.drawLine(x2,y2,x3,y3,paint);
 
 //        canvas.drawLine(x4,y4,x5,y5,paint);
 //        canvas.drawLine(x5,y5,x6,y6,paint);
@@ -193,9 +184,50 @@ public class MainActivity extends AppCompatActivity {
 //        canvas.drawLine(x12,y12,x13,y13,paint);
 
 
-        RectF rectF = new RectF(50, 20, 100, 80);
-        canvas.drawArc(rectF, 0F, 90F, true, paint);
-        drawCircle(canvas,(float)50,(float)50,paint);
+//        RectF rectF = new RectF(50, 20, 100, 80);
+//        canvas.drawArc(rectF, 0F, 90F, true, paint);
+//        drawCircle(canvas,(float)50,(float)50,paint);
+
+        Integer mWidth = 300;
+        Integer mHeight = 300;
+        Integer mRadius = 150;
+        Paint paintArc = new Paint();
+        paintArc.setColor(Color.parseColor("#CD5C5C"));
+        paintArc.setStrokeWidth(2);
+        paintArc.setAntiAlias(true);
+        //paintArc.setStrokeCap(Paint.Cap.ROUND);
+        paintArc.setStyle(Paint.Style.STROKE);
+
+        Integer newY =normaliseCords(170.23597717285156,720.0,width);
+        Integer newX =  normaliseCords(235.83656311035156,1280.0,height);
+        Integer newX1 = normaliseCords(282.8143310546875,1280.0,height);
+        Integer newY1 = normaliseCords(179.19447326660156,720.0,width);
+
+        Point p1 = new Point(x1, y1);
+        Point p2 = new Point(x2, y2);
+        Point p3 = new Point(x3, y3);
+
+        Point midPoint = getMidPoint(p1,p2);
+        Point midPoint2 = getMidPoint(p2,p3);
+
+        drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,30,canvas);
+
+//        int startAngle = (int) (180 / Math.PI * Math.atan2(newY - newY1, newX -newX1));
+//        paintArc.setColor(Color.RED);
+//        Double dist = Math.sqrt((newX - newX1) * (newX - newX1) + (newY - newY1) * (newY - newY1));
+//        float radius = 50;
+//        final RectF oval = new RectF();
+//        oval.set(newX, 50, newX1, 50);
+//        Path myPath = new Path();
+//
+//        Double sweepAngle = 180- (dist/2)/radius;
+//
+//        Log.d(TAG,"ANGLE:"+startAngle);
+//        myPath.arcTo(oval, startAngle, -(float) 360, false);
+//        canvas.drawPath(myPath,paintArc);
+        //canvas.drawArc (oval, 0, 90, false, paintArc);
+
+
         //canvas.drawLine(343,177,335,230,paint);
 
         Log.d(TAG,"TEST X:"+x1);
@@ -222,6 +254,43 @@ public class MainActivity extends AppCompatActivity {
         //player.setPlayWhenReady(playWhenReady);
         player.seekTo(0, 3460);
 
+    }
+
+    public Point getMidPoint(Point p1, Point p2) {
+
+        return new Point((p1.x+p2.x)/2, (p1.y+p2.y)/2);
+    }
+
+
+    public void drawCurvedArrow(int x1, int y1, int x2, int y2, int curveRadius, Canvas canvas) {
+
+        Paint paint  = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+
+        final Path path = new Path();
+        int midX            = x1 + ((x2 - x1) / 2);
+        int midY            = y1 + ((y2 - y1) / 2);
+        float xDiff         = midX - x1;
+        float yDiff         = midY - y1;
+        double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
+        double angleRadians = Math.toRadians(angle);
+        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
+        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
+
+        path.moveTo(x1, y1);
+        path.cubicTo(x1,y1,310, 450, x2, y2);
+        canvas.drawPath(path, paint);
+    }
+
+    private void drawDashedLines(Integer x, Integer y,Canvas canvas) {
+        Paint mPaint = new Paint();
+        mPaint.setARGB(255, 255, 255, 255);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setPathEffect(new DashPathEffect(new float[]{5, 5, 5, 5}, 0));
+        canvas.drawLine(x,y-150,x,y+400,mPaint);
     }
 
     private void drawCircle(Canvas canvas, Float x, Float y, Paint paint) {
