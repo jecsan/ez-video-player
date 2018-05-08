@@ -45,7 +45,6 @@
         android:layout_height="40dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-
         android:paddingLeft="0dp"
         android:layout_marginLeft="-5dp"
         android:src="@android:color/transparent"

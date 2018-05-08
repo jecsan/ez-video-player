@@ -89,7 +89,7 @@ public class CustomTimeBar extends View implements TimeBar {
      * performing an incremental scrub using key input.
      */
     private static final long STOP_SCRUBBING_TIMEOUT_MS = 10;
-    private static final int DEFAULT_INCREMENT_COUNT = 5;
+    private static final int DEFAULT_INCREMENT_COUNT = 1;
 
     private final Rect seekBounds;
     private final Rect progressBar;
@@ -176,8 +176,8 @@ public class CustomTimeBar extends View implements TimeBar {
                     Bitmap newBtmp = Bitmap.createScaledBitmap(tmpBtm, thumbWidth, thumbHeight, false);
                     samepleBitmaps.add(newBtmp);
                 }
-
-                currentTime = currentTime+framesMsSkip;
+                currentTime = 99999999;
+                //currentTime = currentTime+framesMsSkip;
             }
             Log.d(TAG, "Thumbnails count: "+Integer.toString(samepleBitmaps.size()));
         } catch(IOException ex) {
