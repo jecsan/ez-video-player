@@ -48,7 +48,7 @@ import com.google.android.exoplayer2.util.Util;
 * */
 public class MainActivity extends AppCompatActivity {
 
-    private SimpleExoPlayerView playerView;
+    private CustomExoPlayerView playerView;
     private SimpleExoPlayer player;
     private boolean playWhenReady = true;
     private long playbackPosition;
