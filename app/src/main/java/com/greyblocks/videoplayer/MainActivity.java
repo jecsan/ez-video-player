@@ -124,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
         player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
 
-        Uri uri = Uri.parse("assets:///test8.mov");
+        Uri uri = Uri.parse("assets:///test10.mov");
         MediaSource mediaSource = buildMediaSource(uri);
 
 
         Paint paint = new Paint();
-        paint.setColor(Color.parseColor("#01ee18"));
+        paint.setColor(Color.parseColor("#00ffff"));
         paint.setStrokeWidth(4);
 
 
@@ -138,18 +138,20 @@ public class MainActivity extends AppCompatActivity {
         int height = dis.getHeight();
 
 
-        Bitmap bg = Bitmap.createBitmap(720, 1280, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bg);
+        DrawingController drawer = new DrawingController(dis);
+        //drawer.drawLine("#00ffff", new Point(235,170), new Point(282,179));
+        drawer.drawKf2AtoK(new Point(102,192), new Point(142,198));
+        drawer.drawKf2KtoH(new Point(142,198), new Point(200,162));
+        drawer.drawKf2Line(new Point(338,153));
+        drawer.drawKf2AtoKAngle(new Point(102,192), new Point(142,198),new Point(200,162));
+
+
+        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-
-//        canvas.translate(0,canvas.getHeight());   // reset where 0,0 is located
-//        canvas.scale(1,-1);
-
-        Log.d(TAG,"HEIGHT"+height);
-        Log.d(TAG,"WIDTH"+width);
         paint.setAntiAlias(true);
 
         Integer x1 = normaliseCords(235.83656311035156,1280.0,height);
@@ -158,39 +160,18 @@ public class MainActivity extends AppCompatActivity {
         Integer x2 = normaliseCords(282.8143310546875,1280.0,height);
         Integer y2 = normaliseCords(179.19447326660156,720.0,width);
 
-        Integer x3 = normaliseCords(354.7802734375,1280.0,height);
+        Integer x3 = normaliseCords(338.78784179687,1280.0,height);
         Integer y3 = normaliseCords(153.3143768310547,720.0,width);
 
-        Integer hpX = normaliseCords(354.7802734375,1280.0,height);
+        Integer hpX = normaliseCords(338.78784179687,1280.0,height);
         Integer hpY = normaliseCords(79.65565490722656,720.0,width);
 
 
 
+        //canvas.drawLine(x1,y1,x2,y2,paint);
+//        canvas.drawLine(x2,y2,x3,y3,paint);
+        //drawDashedLines(hpX,hpY,canvas);
 
-        canvas.drawLine(x1,y1,x2,y2,paint);
-        canvas.drawLine(x2,y2,x3,y3,paint);
-        drawDashedLines(hpX,hpY,canvas);
-        //canvas.drawLine(x2,y2,x3,y3,paint);
-
-//        canvas.drawLine(x4,y4,x5,y5,paint);
-//        canvas.drawLine(x5,y5,x6,y6,paint);
-//
-//        canvas.drawLine(x7,y7,x8,y8,paint);
-//        canvas.drawLine(x8,y8,x9,y9,paint);
-        //drawCircle(canvas);
-
-
-//        canvas.drawLine(x10,y10,x11,y11,paint);
-//        canvas.drawLine(x12,y12,x13,y13,paint);
-
-
-//        RectF rectF = new RectF(50, 20, 100, 80);
-//        canvas.drawArc(rectF, 0F, 90F, true, paint);
-//        drawCircle(canvas,(float)50,(float)50,paint);
-
-        Integer mWidth = 300;
-        Integer mHeight = 300;
-        Integer mRadius = 150;
         Paint paintArc = new Paint();
         paintArc.setColor(Color.parseColor("#CD5C5C"));
         paintArc.setStrokeWidth(2);
@@ -198,10 +179,6 @@ public class MainActivity extends AppCompatActivity {
         //paintArc.setStrokeCap(Paint.Cap.ROUND);
         paintArc.setStyle(Paint.Style.STROKE);
 
-        Integer newY =normaliseCords(170.23597717285156,720.0,width);
-        Integer newX =  normaliseCords(235.83656311035156,1280.0,height);
-        Integer newX1 = normaliseCords(282.8143310546875,1280.0,height);
-        Integer newY1 = normaliseCords(179.19447326660156,720.0,width);
 
         Point p1 = new Point(x1, y1);
         Point p2 = new Point(x2, y2);
@@ -210,31 +187,7 @@ public class MainActivity extends AppCompatActivity {
         Point midPoint = getMidPoint(p1,p2);
         Point midPoint2 = getMidPoint(p2,p3);
 
-        drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,30,canvas);
-
-//        int startAngle = (int) (180 / Math.PI * Math.atan2(newY - newY1, newX -newX1));
-//        paintArc.setColor(Color.RED);
-//        Double dist = Math.sqrt((newX - newX1) * (newX - newX1) + (newY - newY1) * (newY - newY1));
-//        float radius = 50;
-//        final RectF oval = new RectF();
-//        oval.set(newX, 50, newX1, 50);
-//        Path myPath = new Path();
-//
-//        Double sweepAngle = 180- (dist/2)/radius;
-//
-//        Log.d(TAG,"ANGLE:"+startAngle);
-//        myPath.arcTo(oval, startAngle, -(float) 360, false);
-//        canvas.drawPath(myPath,paintArc);
-        //canvas.drawArc (oval, 0, 90, false, paintArc);
-
-
-        //canvas.drawLine(343,177,335,230,paint);
-
-        Log.d(TAG,"TEST X:"+x1);
-        Log.d(TAG,"TEST Y:"+y1);
-        //canvas.drawLine(338,153,282,179,paint);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-        ll.setBackgroundDrawable(new BitmapDrawable(bg));
+        //drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,30,canvas);
 
 
 //        MediaMetadataRetriever mMMR = new MediaMetadataRetriever();
@@ -252,12 +205,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         //player.setPlayWhenReady(playWhenReady);
-        player.seekTo(0, 3460);
+        player.seekTo(0, 1333);
 
     }
 
     public Point getMidPoint(Point p1, Point p2) {
-
         return new Point((p1.x+p2.x)/2, (p1.y+p2.y)/2);
     }
 
@@ -293,57 +245,15 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawLine(x,y-150,x,y+400,mPaint);
     }
 
-    private void drawCircle(Canvas canvas, Float x, Float y, Paint paint) {
-//        float radius = 50;
-//        Path path = new Path();
-//        path.addCircle(100 / 2,
-//                100 / 2, 50,
-//                Path.Direction.CW);
-//
-//        Paint paint = new Paint();
-//        paint.setColor(Color.BLACK);
-//        paint.setStrokeWidth(5);
-//        paint.setStyle(Paint.Style.FILL);
-//
-//        float center_x, center_y;
-//        final RectF oval = new RectF();
-//        paint.setStyle(Paint.Style.STROKE);
-//
-//        center_x = 100 / 2;
-//        center_y = 100 / 2;
-//
-//        oval.set(center_x - radius,
-//                center_y - radius,
-//                center_x + radius,
-//                center_y + radius);
-//        canvas.drawArc(oval, 90, 180, false, paint);
-        float radius = 20;
-        final RectF oval = new RectF();
-        oval.set(x - radius, y - radius, x + radius,y+ radius);
-        Path myPath = new Path();
-        int startAngle = (int) (180 / Math.PI * Math.atan2(y - y, x - x));
-        myPath.arcTo(oval, startAngle, -(float) 90, true);
-        canvas.drawArc(oval, 90, 180, false, paint);
-    }
-
 
     private Integer normaliseCords(Double value, Double screenRatio, Integer deviceRatio) {
         Integer newVal;
-//        if (screenRatio == 1280.0) {
-//            newVal = value-30;
-//        } else {
-//            newVal = value-17;
-//        }
-
-
         newVal = (int)(value/screenRatio*(float)deviceRatio);
-
         if (screenRatio == 1280.0) {
             newVal = newVal+80;
         } else {
             newVal = newVal+190;
         }
-
         return newVal;
     }
 
