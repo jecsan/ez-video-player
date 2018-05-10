@@ -32,7 +32,6 @@
         android:layout_above="@id/exo_controller_placeholder"
         android:layout_toRightOf="@id/exo_content_frame"
         android:layout_width="300dp"
-        android:background="@android:color/holo_red_dark"
         android:layout_height="match_parent" />
 
     <com.greyblocks.videoplayer.CustomPlayerControlView

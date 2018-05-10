@@ -5,18 +5,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
-public class ProShotView extends AppCompatButton implements View.OnClickListener {
+public class ProShotView extends RelativeLayout implements View.OnClickListener {
 
     private boolean shown = false;
     private ProShotAction proShotAction;
+    private ImageButton expandBtn;
+    private ImageButton collapseBtn;
+
 
     public void setProShotAction(ProShotAction proShotAction) {
         this.proShotAction = proShotAction;
     }
 
-    public interface ProShotAction{
+    public interface ProShotAction {
         void onExpand();
+
         void onCollapse();
     }
 
@@ -37,25 +43,49 @@ public class ProShotView extends AppCompatButton implements View.OnClickListener
 
     @Override
     public void setOnClickListener(@Nullable OnClickListener l) {
+        //Do nothing
+    }
 
+    public void setProShotDrawable(int res) {
+        setBackgroundResource(res);
     }
 
     private void init() {
-        setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_controls_previous, 0, 0, 0);
+        inflate(getContext(), R.layout.proshot_view, this);
+        expandBtn = findViewById(R.id.expand_ib);
+        collapseBtn = findViewById(R.id.collapse_ib);
+        expandBtn.setOnClickListener(this);
+        collapseBtn.setOnClickListener(this);
+        collapseBtn.setVisibility(View.GONE);
         super.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (shown) {
-            shown = false;
-            setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_controls_previous, 0, 0, 0);
-            proShotAction.onCollapse();
+        switch (v.getId()) {
+            case R.id.expand_ib:
+                proShotAction.onExpand();
+                expandBtn.setVisibility(View.GONE);
+                collapseBtn.setVisibility(View.VISIBLE);
+                shown = true;
+                break;
+            case R.id.collapse_ib:
+                proShotAction.onCollapse();
+                expandBtn.setVisibility(View.VISIBLE);
+                collapseBtn.setVisibility(View.GONE);
+                shown = false;
+                break;
+            default:
+                if (shown) {
+                    shown = false;
+                    proShotAction.onCollapse();
 
-        } else {
-            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.exo_controls_next, 0);
-            shown = true;
-            proShotAction.onExpand();
+                } else {
+                    shown = true;
+                    proShotAction.onExpand();
+                }
+                break;
         }
+
     }
 }

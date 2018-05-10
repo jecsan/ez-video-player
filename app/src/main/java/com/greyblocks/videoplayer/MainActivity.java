@@ -45,6 +45,11 @@ import com.google.android.exoplayer2.util.Util;
 * https://github.com/google/ExoPlayer/issues/1399
 * https://github.com/google/ExoPlayer/issues/2882 - faster seek
 *
+* TODO
+* Expose a method to set proshot image
+* Set proshot/video player to consumer half of the screen
+* Compute dimensions programmatically
+*
 * */
 public class MainActivity extends AppCompatActivity {
 
