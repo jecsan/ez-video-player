@@ -21,8 +21,8 @@ public class DrawingController {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private Integer videoWidth = 720;
-    private Integer videoHeight = 1280;
+    private Integer videoWidth = 1280;
+    private Integer videoHeight = 720;
     private Integer deviceWidth = 0;
     private Integer deviceHeight = 0;
     private Double screenRatio = 0.0;
@@ -32,12 +32,23 @@ public class DrawingController {
     public DrawingController(Display dis) {
         this.deviceWidth = dis.getWidth();
         this.deviceHeight = dis.getHeight();
+        Log.d(TAG,"WIDTH"+deviceWidth);
+        Log.d(TAG,"WIDTH"+deviceHeight);
         bg = Bitmap.createBitmap(videoWidth, videoHeight, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bg);
     }
 
     public Bitmap getBitmap() {
         return this.bg;
+    }
+
+    public void drawRaw(String color, Point p1, Point p2) {
+        Paint paint = new Paint();
+        paint.setColor(Color.parseColor(color));
+        paint.setStrokeWidth(6);
+        paint.setStrokeCap(Paint.Cap.SQUARE);
+        paint.setAntiAlias(true);
+        canvas.drawLine(p1.x,p1.y,p2.x,p2.y,paint);
     }
 
     public void drawLine(String color, Point p1, Point p2) {
@@ -49,13 +60,27 @@ public class DrawingController {
         //paint.setDither(false);
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
+//
+//        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//        drawer.drawKf2Line(new Point(238,122));
+//        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+//
+
         canvas.drawLine(newP1.x,newP1.y,newP2.x,newP2.y,paint);
     }
 
     public Point normalisePoint(Point point) {
         Point newPoint = new Point(0,0);
-        Float newX = (((float)point.x/(float)videoHeight)*(float)deviceHeight)+80;
-        Float newY = ((float)((float)point.y/(float)videoWidth)*(float)deviceWidth)+190;
+//        Float newX = (((float)point.x/(float)videoWidth)*(float)deviceWidth);
+//        Float newY = ((float)((float)point.y/(float)videoHeight)*(float)deviceHeight);
+
+        Float newX = (float)(point.x*1.05)+point.x;
+        Float newY = (float)(point.y*1.05)+point.y;
+
+        Log.d(TAG,"X="+newX.intValue());
+        Log.d(TAG,"Y="+newY.intValue());
+
         newPoint.set(newX.intValue(),newY.intValue());
         return newPoint;
     }
@@ -100,17 +125,17 @@ public class DrawingController {
 
 
     public void drawKf2AtoK(Point p1, Point p2) {
-        drawLine("#00ffff", new Point(p1.x-10,p1.y-5), p2);
+        drawLine("#00ffff", new Point(p1.x,p1.y), p2);
     }
 
 
     public void drawKf2KtoH(Point p1, Point p2) {
-        drawLine("#00ff03", p1,new Point(p2.x+10,p2.y-5));
+        drawLine("#00ff03", p1,new Point(p2.x,p2.y));
     }
 
     public void drawKf2Line(Point p1) {
         Point newP1 = normalisePoint(p1);
-        drawDashedLines(newP1.x+10,newP1.y);
+        drawDashedLines(newP1.x,newP1.y);
     }
 
     public void drawKf2AtoKAngle(Point p1, Point p2, Point p3) {

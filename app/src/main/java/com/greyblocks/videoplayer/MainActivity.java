@@ -119,93 +119,32 @@ public class MainActivity extends AppCompatActivity {
         player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(this),
                 new DefaultTrackSelector(), new DefaultLoadControl());
-
+//        AspectRatioFrameLayou
+//        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         playerView.setPlayer(player);
         player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
 
-        Uri uri = Uri.parse("assets:///test10.mov");
+        Uri uri = Uri.parse("assets:///base_2.mov");
         MediaSource mediaSource = buildMediaSource(uri);
 
-
-        Paint paint = new Paint();
-        paint.setColor(Color.parseColor("#00ffff"));
-        paint.setStrokeWidth(4);
-
-
         Display dis = getWindowManager().getDefaultDisplay();
-        int width = dis.getWidth();
-        int height = dis.getHeight();
-
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         DrawingController drawer = new DrawingController(dis);
-        //drawer.drawLine("#00ffff", new Point(235,170), new Point(282,179));
-        drawer.drawKf2AtoK(new Point(102,192), new Point(142,198));
-        drawer.drawKf2KtoH(new Point(142,198), new Point(200,162));
-        drawer.drawKf2Line(new Point(338,153));
-        drawer.drawKf2AtoKAngle(new Point(102,192), new Point(142,198),new Point(200,162));
-
+        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+        drawer.drawKf2Line(new Point(238,122));
+        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
         ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-        paint.setAntiAlias(true);
-
-        Integer x1 = normaliseCords(235.83656311035156,1280.0,height);
-        Integer y1 = normaliseCords(170.23597717285156,720.0,width);
-
-        Integer x2 = normaliseCords(282.8143310546875,1280.0,height);
-        Integer y2 = normaliseCords(179.19447326660156,720.0,width);
-
-        Integer x3 = normaliseCords(338.78784179687,1280.0,height);
-        Integer y3 = normaliseCords(153.3143768310547,720.0,width);
-
-        Integer hpX = normaliseCords(338.78784179687,1280.0,height);
-        Integer hpY = normaliseCords(79.65565490722656,720.0,width);
-
-
-
-        //canvas.drawLine(x1,y1,x2,y2,paint);
-//        canvas.drawLine(x2,y2,x3,y3,paint);
-        //drawDashedLines(hpX,hpY,canvas);
-
-        Paint paintArc = new Paint();
-        paintArc.setColor(Color.parseColor("#CD5C5C"));
-        paintArc.setStrokeWidth(2);
-        paintArc.setAntiAlias(true);
-        //paintArc.setStrokeCap(Paint.Cap.ROUND);
-        paintArc.setStyle(Paint.Style.STROKE);
-
-
-        Point p1 = new Point(x1, y1);
-        Point p2 = new Point(x2, y2);
-        Point p3 = new Point(x3, y3);
-
-        Point midPoint = getMidPoint(p1,p2);
-        Point midPoint2 = getMidPoint(p2,p3);
-
-        //drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,30,canvas);
-
-
-//        MediaMetadataRetriever mMMR = new MediaMetadataRetriever();
-//        mMMR.setDataSource("assets:///stream.mp4");
-//        Log.d(TAG, "---------");
-//        //api time unit is microseconds
-//        currentTime = 1000000;
-//        while (timeInMs > currentTime ) {
-//            framesArray.add(mMMR.getFrameAtTime(currentTime, MediaMetadataRetriever.OPTION_CLOSEST));
-//            Log.d(TAG, Integer.toString(currentTime));
-//            currentTime = currentTime+300000;
-//        }
-
         player.prepare(mediaSource, false, false);
-
-
         //player.setPlayWhenReady(playWhenReady);
-        player.seekTo(0, 1333);
+        //player.seekTo(0,  2533);
+        player.seekTo(0,  3463);
 
     }
 
