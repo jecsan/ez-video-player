@@ -125,26 +125,26 @@ public class MainActivity extends AppCompatActivity {
         player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
 
-        Uri uri = Uri.parse("assets:///base_2.mov");
+        Uri uri = Uri.parse("assets:///base.mp4");
         MediaSource mediaSource = buildMediaSource(uri);
 
         Display dis = getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        DrawingController drawer = new DrawingController(dis);
-        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
-        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
-        drawer.drawKf2Line(new Point(238,122));
-        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
-
-        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//        DrawingController drawer = new DrawingController(dis);
+//        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//        drawer.drawKf2Line(new Point(238,122));
+//        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+//
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
         player.prepare(mediaSource, false, false);
-        //player.setPlayWhenReady(playWhenReady);
+        player.setPlayWhenReady(playWhenReady);
         //player.seekTo(0,  2533);
-        player.seekTo(0,  3463);
+        player.seekTo(0,  0);
 
     }
 
