@@ -6,14 +6,15 @@ import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class ProShotView extends RelativeLayout implements View.OnClickListener {
 
     private boolean shown = false;
     private ProShotAction proShotAction;
-    private ImageButton expandBtn;
-    private ImageButton collapseBtn;
+    private ImageView expandBtn;
+    private ImageView collapseBtn;
 
 
     public void setProShotAction(ProShotAction proShotAction) {
@@ -54,34 +55,44 @@ public class ProShotView extends RelativeLayout implements View.OnClickListener 
         inflate(getContext(), R.layout.proshot_view, this);
         expandBtn = findViewById(R.id.expand_ib);
         collapseBtn = findViewById(R.id.collapse_ib);
-        expandBtn.setOnClickListener(this);
-        collapseBtn.setOnClickListener(this);
+//        expandBtn.setOnClickListener(this);
+//        collapseBtn.setOnClickListener(this);
         collapseBtn.setVisibility(View.GONE);
         super.setOnClickListener(this);
+    }
+
+    private void onCollapsed() {
+        expandBtn.setVisibility(View.VISIBLE);
+        collapseBtn.setVisibility(View.GONE);
+        proShotAction.onExpand();
+    }
+
+    private void onExpanded() {
+        expandBtn.setVisibility(View.GONE);
+        collapseBtn.setVisibility(View.VISIBLE);
+        proShotAction.onCollapse();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.expand_ib:
-                proShotAction.onExpand();
-                expandBtn.setVisibility(View.GONE);
-                collapseBtn.setVisibility(View.VISIBLE);
+                onExpanded();
                 shown = true;
                 break;
             case R.id.collapse_ib:
-                proShotAction.onCollapse();
-                expandBtn.setVisibility(View.VISIBLE);
-                collapseBtn.setVisibility(View.GONE);
+                onCollapsed();
                 shown = false;
                 break;
             default:
                 if (shown) {
                     shown = false;
+                    onCollapsed();
                     proShotAction.onCollapse();
 
                 } else {
                     shown = true;
+                    onExpanded();
                     proShotAction.onExpand();
                 }
                 break;
