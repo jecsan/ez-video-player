@@ -80,6 +80,11 @@ import android.widget.LinearLayout;
 * https://github.com/google/ExoPlayer/issues/1399
 * https://github.com/google/ExoPlayer/issues/2882 - faster seek
 *
+* TODO
+* Expose a method to set proshot image
+* Set proshot/video player to consumer half of the screen
+* Compute dimensions programmatically
+*
 * */
 public class MainActivity extends AppCompatActivity {
 
@@ -91,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
     private static final int BUFFER_SEGMENT_COUNT = 160;
     private ProShotView proShotView;
+    private CustomPlayerControlView customerPlayerView;
+    public Display dis;
+    private DrawAction drawAction;
+
     private static final String TAG = MainActivity.class.getSimpleName();
     public ArrayList<Bitmap> framesArray = new ArrayList<>();
 
@@ -192,18 +201,18 @@ public class MainActivity extends AppCompatActivity {
 
         MediaSource mediaSource = buildMediaSource(uri);
 
-        Display dis = getWindowManager().getDefaultDisplay();
+        dis = getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-//        DrawingController drawer = new DrawingController(dis);
-//        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
-//        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
-//        drawer.drawKf2Line(new Point(238,122));
-//        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
-//
-//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+        DrawingController drawer = new DrawingController(dis);
+        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+        drawer.drawKf2Line(new Point(238,122));
+        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+
+        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
 
         player.prepare(mediaSource, false, false);
@@ -286,4 +295,28 @@ public class MainActivity extends AppCompatActivity {
             player = null;
         }
     }
+
+    public void drawKeyframe(Long position) {
+        if (position == 2533) {
+            dis = getWindowManager().getDefaultDisplay();
+            DrawingController drawer = new DrawingController(dis);
+            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+            drawer.drawKf2Line(new Point(238,122));
+            drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+
+            LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+        }
+    }
+
+
+    public void setDrawing(MainActivity.DrawAction drawer) {
+        this.drawAction = drawer;
+    }
+
+    public interface DrawAction {
+        void drawFrame(Long position);
+    }
+
 }

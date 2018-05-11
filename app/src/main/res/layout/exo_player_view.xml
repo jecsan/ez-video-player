@@ -29,23 +29,18 @@
 
     <com.greyblocks.videoplayer.ProShotView
         android:id="@+id/pro_shot_view"
-        android:layout_width="400dp"
-        android:layout_height="match_parent"
         android:layout_above="@id/exo_controller_placeholder"
         android:layout_toRightOf="@id/exo_content_frame"
-        android:background="@android:color/transparent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/exo_content_frame" />
 
     <com.greyblocks.videoplayer.CustomPlayerControlView
         android:id="@id/exo_controller_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/draw_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-    </LinearLayout>
+
+
 
 </RelativeLayout>

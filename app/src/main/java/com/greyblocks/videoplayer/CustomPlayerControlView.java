@@ -195,6 +195,7 @@ public class CustomPlayerControlView extends FrameLayout {
     public static final @RepeatModeUtil.RepeatToggleModes int DEFAULT_REPEAT_TOGGLE_MODES =
             RepeatModeUtil.REPEAT_TOGGLE_MODE_NONE;
 
+
     /** The maximum number of windows that can be shown in a multi-window time bar. */
     public static final int MAX_WINDOWS_FOR_MULTI_WINDOW_TIME_BAR = 100;
 
@@ -229,6 +230,7 @@ public class CustomPlayerControlView extends FrameLayout {
     private com.google.android.exoplayer2.ui.PlayerControlView.VisibilityListener visibilityListener;
     private @Nullable PlaybackPreparer playbackPreparer;
 
+    private boolean allowDraw = false;
     private boolean isAttachedToWindow;
     private boolean showMultiWindowTimeBar;
     private boolean multiWindowTimeBar;
@@ -243,6 +245,8 @@ public class CustomPlayerControlView extends FrameLayout {
     private boolean[] playedAdGroups;
     private long[] extraAdGroupTimesMs;
     private boolean[] extraPlayedAdGroups;
+    public MainActivity.DrawAction drawer;
+    public MainActivity mainAct;
 
     private final Runnable updateProgressAction =
             new Runnable() {
@@ -832,8 +836,41 @@ public class CustomPlayerControlView extends FrameLayout {
         }
 
         Log.d(TAG,"POSITION"+position);
+        if (!allowDraw) {
+            Activity act = ((Activity) getContext());
+            Display dis = act.getWindowManager().getDefaultDisplay();
+            DrawingController drawer = new DrawingController(dis);
+            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+            drawer.drawKf2Line(new Point(238,122));
+            drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
 
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View view = inflater.inflate( R.layout.activity_main, null );
+            LinearLayout ll = view.findViewById(R.id.draw_area);
+            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+            allowDraw = true;
+        }
+
+        //mainAct.drawKeyframe(position);
+
+//        mainAct.setDrawing(new MainActivity.DrawAction() {
+//            @Override
+//            public void drawFrame(Long position) {
+//                Activity act = ((Activity) getContext());
+//                Display dis = act.getWindowManager().getDefaultDisplay();
+//                DrawingController drawer = new DrawingController(dis);
+//                drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//                drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//                drawer.drawKf2Line(new Point(238,122));
+//                drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
 //
+//                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//                ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//            }
+//        });
+//
+////
 //        Activity act = ((Activity) getContext());
 //        Display dis = act.getWindowManager().getDefaultDisplay();
 //        DisplayMetrics metrics = new DisplayMetrics();
@@ -1155,4 +1192,7 @@ public class CustomPlayerControlView extends FrameLayout {
             hideAfterTimeout();
         }
     }
+
+
+
 }

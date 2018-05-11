@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/act_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -9,13 +10,20 @@
 
     <com.greyblocks.videoplayer.CustomExoPlayerView
         android:id="@+id/video_view"
-        app:use_artwork="true"
-        app:player_layout_id="@layout/exo_player_view"
-        app:controller_layout_id="@layout/exo_playback_controller_pause"
-        app:resize_mode="fill"
-        app:hide_on_touch="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:controller_layout_id="@layout/exo_playback_controller_pause"
+        app:hide_on_touch="false"
+        app:player_layout_id="@layout/exo_player_view"
+        app:resize_mode="fill"
+        app:use_artwork="true" />
 
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/draw_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
 
 </LinearLayout>
