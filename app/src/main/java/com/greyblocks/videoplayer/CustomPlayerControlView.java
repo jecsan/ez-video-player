@@ -16,18 +16,25 @@ package com.greyblocks.videoplayer;
  */
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
@@ -161,6 +168,7 @@ import java.util.Locale;
  * {@code exo_player_control_view.xml} for only the instance on which the attribute is set.
  */
 public class CustomPlayerControlView extends FrameLayout {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     static {
         ExoPlayerLibraryInfo.registerModule("goog.exo.ui");
@@ -822,6 +830,25 @@ public class CustomPlayerControlView extends FrameLayout {
 //            }
             postDelayed(updateProgressAction, delayMs);
         }
+
+        Log.d(TAG,"POSITION"+position);
+
+//
+//        Activity act = ((Activity) getContext());
+//        Display dis = act.getWindowManager().getDefaultDisplay();
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        act.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//
+//        DrawingController drawer = new DrawingController(dis);
+//        drawer.drawKf2AtoK(new Point(169, 141), new Point(212, 157));
+//        drawer.drawKf2KtoH(new Point(212, 157), new Point(238, 122));
+//        drawer.drawKf2Line(new Point(238, 122));
+//        drawer.drawKf2AtoKAngle(new Point(169, 141), new Point(212, 157), new Point(238, 122));
+//
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+
+
     }
 
     private void requestPlayPauseFocus() {

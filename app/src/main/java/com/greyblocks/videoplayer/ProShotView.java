@@ -1,10 +1,14 @@
 package com.greyblocks.videoplayer;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.io.IOException;
 
 public class ProShotView extends AppCompatButton implements View.OnClickListener {
 
@@ -49,10 +53,20 @@ public class ProShotView extends AppCompatButton implements View.OnClickListener
     public void onClick(View v) {
         if (shown) {
             shown = false;
-            setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_controls_previous, 0, 0, 0);
-            proShotAction.onCollapse();
+            //setBackgroundColor(getResources().getColor(android.R.color.transparent));
 
         } else {
+//            setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_controls_previous, 0, 0, 0);
+//            Context context = getContext();
+//            Drawable d = null;
+//            try {
+//                d = Drawable.createFromStream(context.getAssets().open("proshot/kf3.png"), null);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            setBackground(d);
+            proShotAction.onCollapse();
+
             setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.exo_controls_next, 0);
             shown = true;
             proShotAction.onExpand();

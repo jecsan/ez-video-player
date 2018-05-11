@@ -1,7 +1,17 @@
 package com.greyblocks.videoplayer;
 
+import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.DashPathEffect;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.RectF;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +21,20 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -34,7 +52,24 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
+import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EventListener;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.Window;
+import android.widget.LinearLayout;
+
 
 /*
 * TODO
@@ -56,10 +91,19 @@ public class MainActivity extends AppCompatActivity {
     private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
     private static final int BUFFER_SEGMENT_COUNT = 160;
     private ProShotView proShotView;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    public ArrayList<Bitmap> framesArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try
+        {
+            this.getSupportActionBar().hide();
+        }
+        catch (NullPointerException e){}
+
+
         setContentView(R.layout.activity_main);
         playerView = findViewById(R.id.video_view);
     }
@@ -89,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
         player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(this),
                 new DefaultTrackSelector(), new DefaultLoadControl());
-
+//        AspectRatioFrameLayou
+//        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         playerView.setPlayer(player);
         player.setSeekParameters(SeekParameters.EXACT);
         proShotView = playerView.findViewById(R.id.pro_shot_view);
@@ -138,16 +183,48 @@ public class MainActivity extends AppCompatActivity {
 //        },2000);
 
 
-        Uri uri = Uri.parse("assets:///sample.mp4");
+   //     Uri uri = Uri.parse("assets:///sample.mp4");
+
+        //player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
+
+
+        Uri uri = Uri.parse("assets:///base.mov");
+
         MediaSource mediaSource = buildMediaSource(uri);
 
-        player.prepare(mediaSource, true, false);
+        Display dis = getWindowManager().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+//        DrawingController drawer = new DrawingController(dis);
+//        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//        drawer.drawKf2Line(new Point(238,122));
+//        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+//
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
 
-        player.setPlayWhenReady(playWhenReady);
-        player.seekTo(0, 0);
+        player.prepare(mediaSource, false, false);
+        //player.setPlayWhenReady(playWhenReady);
+        player.seekTo(0,  2533);
+        //player.seekTo(0,  0);
+
 
     }
+
+    private String getRealPathFromURIPath(Uri contentURI, Activity activity) {
+        Cursor cursor = activity.getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            return contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            return cursor.getString(idx);
+        }
+    }
+
 
     private MediaSource buildMediaSource(Uri uri) {
         Cache cache = new SimpleCache(getApplication().getCacheDir(), new LeastRecentlyUsedCacheEvictor(1024 * 1024 * 10));
@@ -176,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 //        },,
 //                , new DefaultExtractorsFactory(), null, null);
     }
+
 
     @Override
     public void onStart() {

@@ -1,7 +1,9 @@
 package com.greyblocks.videoplayer;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,11 +15,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,12 +30,14 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
+import android.widget.LinearLayout;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -79,13 +86,13 @@ public class CustomTimeBar extends View implements TimeBar {
     /**
      * The ratio by which times are reduced in fine scrub mode.
      */
-    private static final int FINE_SCRUB_RATIO = 3;
+    private static final int FINE_SCRUB_RATIO = 1;
     /**
      * The time after which the scrubbing listener is notified that scrubbing has stopped after
      * performing an incremental scrub using key input.
      */
-    private static final long STOP_SCRUBBING_TIMEOUT_MS = 1000;
-    private static final int DEFAULT_INCREMENT_COUNT = 20;
+    private static final long STOP_SCRUBBING_TIMEOUT_MS = 10;
+    private static final int DEFAULT_INCREMENT_COUNT = 1;
 
     private final Rect seekBounds;
     private final Rect progressBar;
@@ -111,6 +118,11 @@ public class CustomTimeBar extends View implements TimeBar {
     private final Runnable stopScrubbingRunnable;
     private final CopyOnWriteArraySet<OnScrubListener> listeners;
 
+    private final Integer imagesOffset = 100;
+    private final Integer thumbWidth = 150;
+    private final Integer framesMsSkip = 200000;
+    private final Integer thumbHeight = 150;
+
     private int keyCountIncrement;
     private long keyTimeIncrement;
     private int lastCoarseScrubXPosition;
@@ -128,7 +140,7 @@ public class CustomTimeBar extends View implements TimeBar {
 
     private Bitmap sampleBitmap;
     private List<Bitmap> samepleBitmaps = new ArrayList<>();
-
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
 
@@ -145,10 +157,34 @@ public class CustomTimeBar extends View implements TimeBar {
     }
 
 
-    private void initTimebarBitmaps(){
-        sampleBitmap = drawableToBitmap(ContextCompat.getDrawable(getContext(),R.drawable.exo_controls_fastforward));
-        for(int i=0;i<10;i++){
-            samepleBitmaps.add(sampleBitmap);
+    private void initTimebarBitmaps(Context context){
+//        sampleBitmap = drawableToBitmap(ContextCompat.getDrawable(getContext(),R.drawable.exo_controls_fastforward));
+//        for(int i=0;i<10;i++){
+//            samepleBitmaps.add(sampleBitmap);
+//        }
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        final AssetFileDescriptor afd;
+        try {
+            afd = context.getAssets().openFd("stream.mp4");
+            retriever.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+            String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            Integer timeInMs = Integer.parseInt(time)*1000;
+            Log.d(TAG, "Video Time:"+ Integer.toString(timeInMs));
+
+            Integer currentTime = 0;
+            while (timeInMs > currentTime ) {
+                Bitmap tmpBtm = retriever.getFrameAtTime(currentTime, MediaMetadataRetriever.OPTION_CLOSEST);
+                if (tmpBtm  != null) {
+                    Bitmap newBtmp = Bitmap.createScaledBitmap(tmpBtm, thumbWidth, thumbHeight, false);
+                    samepleBitmaps.add(newBtmp);
+                }
+                //currentTime = 99999999;
+                currentTime = currentTime+framesMsSkip;
+            }
+            Log.d(TAG, "Thumbnails count: "+Integer.toString(samepleBitmaps.size()));
+        } catch(IOException ex) {
+
         }
 
     }
@@ -171,7 +207,7 @@ public class CustomTimeBar extends View implements TimeBar {
         scrubberPaint.setAntiAlias(true);
         listeners = new CopyOnWriteArraySet<>();
 
-        initTimebarBitmaps();
+        initTimebarBitmaps(context);
 
         // Calculate the dimensions and paints for drawn elements.
         Resources res = context.getResources();
@@ -217,7 +253,7 @@ public class CustomTimeBar extends View implements TimeBar {
                 int playedAdMarkerColor = a.getInt(R.styleable.DefaultTimeBar_played_ad_marker_color,
                         getDefaultPlayedAdMarkerColor(adMarkerColor));
                 playedPaint.setColor(Color.TRANSPARENT);
-                scrubberPaint.setColor(Color.RED);
+                scrubberPaint.setColor(Color.WHITE);
                 bufferedPaint.setColor(Color.TRANSPARENT);
                 unplayedPaint.setColor(Color.TRANSPARENT);
                 adMarkerPaint.setColor(adMarkerColor);
@@ -261,6 +297,8 @@ public class CustomTimeBar extends View implements TimeBar {
         if (Util.SDK_INT >= 16) {
             maybeSetImportantForAccessibilityV16();
         }
+
+
     }
 
     @Override
@@ -564,6 +602,7 @@ public class CustomTimeBar extends View implements TimeBar {
             bufferedBar.right = Math.min(progressBar.left + bufferedPixelWidth, progressBar.right);
             int scrubberPixelPosition = (int) ((progressBar.width() * newScrubberTime) / duration);
             scrubberBar.right = Math.min(progressBar.left + scrubberPixelPosition, progressBar.right);
+            //scrubberBar.right = scrubberBar.right-100;
         } else {
             bufferedBar.right = progressBar.left;
             scrubberBar.right = progressBar.left;
@@ -600,11 +639,10 @@ public class CustomTimeBar extends View implements TimeBar {
 
     private void drawTimeBar(Canvas canvas) {
         //TODO draw bitmaps here
-
         int bitmapWidth = 0;
         for(Bitmap b : samepleBitmaps){
-            canvas.drawBitmap(sampleBitmap,bitmapWidth,0,scrubberPaint);
-            bitmapWidth+=b.getWidth();
+            canvas.drawBitmap(b,bitmapWidth,0,scrubberPaint);
+            bitmapWidth+=imagesOffset;
         }
 
         int progressBarHeight = progressBar.height();
@@ -649,8 +687,11 @@ public class CustomTimeBar extends View implements TimeBar {
         if (scrubberDrawable == null) {
             int scrubberSize = (scrubbing || isFocused()) ? scrubberDraggedSize
                     : (isEnabled() ? scrubberEnabledSize : scrubberDisabledSize);
-            int playheadRadius = scrubberSize / 2;
-            canvas.drawCircle(playheadX, playheadY, playheadRadius, scrubberPaint);
+            //int playheadRadius = scrubberSize / 2;
+            scrubberPaint.setStrokeWidth(8);
+            canvas.drawLine(playheadX, playheadY-70, playheadX, playheadY+70, scrubberPaint);
+            //canvas.drawPoint(playheadX,playheadY,scrubberPaint);
+
         } else {
             int scrubberDrawableWidth = scrubberDrawable.getIntrinsicWidth();
             int scrubberDrawableHeight = scrubberDrawable.getIntrinsicHeight();
@@ -661,6 +702,8 @@ public class CustomTimeBar extends View implements TimeBar {
                     playheadY + scrubberDrawableHeight / 2);
             scrubberDrawable.draw(canvas);
         }
+
+
     }
 
     private void updateDrawableState() {
@@ -675,6 +718,9 @@ public class CustomTimeBar extends View implements TimeBar {
     }
 
     private long getPositionIncrement() {
+//        Long t = keyTimeIncrement == C.TIME_UNSET
+//                ? (duration == C.TIME_UNSET ? 0 : (duration / keyCountIncrement)) : keyTimeIncrement;
+//        Log.d(TAG,"pos:"+Double.toString(t));
         return keyTimeIncrement == C.TIME_UNSET
                 ? (duration == C.TIME_UNSET ? 0 : (duration / keyCountIncrement)) : keyTimeIncrement;
     }
