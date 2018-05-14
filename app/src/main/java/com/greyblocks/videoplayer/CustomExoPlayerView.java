@@ -351,6 +351,14 @@ public class CustomExoPlayerView extends FrameLayout {
         this.controllerHideDuringAds = controllerHideDuringAds;
         this.useController = useController && controller != null;
         hideController();
+
+
+        customController.setDisplayDrawingListener(new CustomPlayerControlView.DisplayDrawingListener() {
+            @Override
+            public void onDisplayDrawing(int pos) {
+                //TODO draw into drawing area
+            }
+        });
     }
 
     /**
