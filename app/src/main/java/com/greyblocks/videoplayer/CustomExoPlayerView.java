@@ -351,6 +351,8 @@ public class CustomExoPlayerView extends FrameLayout {
         this.controllerHideDuringAds = controllerHideDuringAds;
         this.useController = useController && controller != null;
         hideController();
+
+
     }
 
     /**

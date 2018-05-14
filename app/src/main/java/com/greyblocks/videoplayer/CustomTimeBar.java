@@ -86,12 +86,12 @@ public class CustomTimeBar extends View implements TimeBar {
     /**
      * The ratio by which times are reduced in fine scrub mode.
      */
-    private static final int FINE_SCRUB_RATIO = 1;
+    private static final int FINE_SCRUB_RATIO = 0;
     /**
      * The time after which the scrubbing listener is notified that scrubbing has stopped after
      * performing an incremental scrub using key input.
      */
-    private static final long STOP_SCRUBBING_TIMEOUT_MS = 10;
+    private static final long STOP_SCRUBBING_TIMEOUT_MS = 0;
     private static final int DEFAULT_INCREMENT_COUNT = 1;
 
     private final Rect seekBounds;
@@ -179,8 +179,8 @@ public class CustomTimeBar extends View implements TimeBar {
                     Bitmap newBtmp = Bitmap.createScaledBitmap(tmpBtm, thumbWidth, thumbHeight, false);
                     samepleBitmaps.add(newBtmp);
                 }
-                //currentTime = 99999999;
-                currentTime = currentTime+framesMsSkip;
+                currentTime = 99999999;
+                //currentTime = currentTime+framesMsSkip;
             }
             Log.d(TAG, "Thumbnails count: "+Integer.toString(samepleBitmaps.size()));
         } catch(IOException ex) {

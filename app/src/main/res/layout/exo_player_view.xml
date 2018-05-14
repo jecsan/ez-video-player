@@ -21,6 +21,15 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"/>
 
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawing_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+
+
         <com.google.android.exoplayer2.ui.SubtitleView android:id="@id/exo_subtitles"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

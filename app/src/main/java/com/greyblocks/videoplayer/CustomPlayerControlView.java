@@ -195,6 +195,7 @@ public class CustomPlayerControlView extends FrameLayout {
     public static final @RepeatModeUtil.RepeatToggleModes int DEFAULT_REPEAT_TOGGLE_MODES =
             RepeatModeUtil.REPEAT_TOGGLE_MODE_NONE;
 
+    public Integer pos;
 
     /** The maximum number of windows that can be shown in a multi-window time bar. */
     public static final int MAX_WINDOWS_FOR_MULTI_WINDOW_TIME_BAR = 100;
@@ -835,22 +836,24 @@ public class CustomPlayerControlView extends FrameLayout {
             postDelayed(updateProgressAction, delayMs);
         }
 
-        Log.d(TAG,"POSITION"+position);
-        if (!allowDraw) {
-            Activity act = ((Activity) getContext());
-            Display dis = act.getWindowManager().getDefaultDisplay();
-            DrawingController drawer = new DrawingController(dis);
-            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
-            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
-            drawer.drawKf2Line(new Point(238,122));
-            drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+            Log.d(TAG,"POSITION"+position);
 
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            View view = inflater.inflate( R.layout.activity_main, null );
-            LinearLayout ll = view.findViewById(R.id.draw_area);
-            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-            allowDraw = true;
-        }
+
+//        if (!allowDraw) {
+//            Activity act = ((Activity) getContext());
+//            Display dis = act.getWindowManager().getDefaultDisplay();
+//            DrawingController drawer = new DrawingController(dis);
+//            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//            drawer.drawKf2Line(new Point(238,122));
+//            drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+//
+//            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+//            View view = inflater.inflate( R.layout.activity_main, null );
+//            LinearLayout ll = view.findViewById(R.id.draw_area);
+//            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//            allowDraw = true;
+//        }
 
         //mainAct.drawKeyframe(position);
 
@@ -1191,6 +1194,10 @@ public class CustomPlayerControlView extends FrameLayout {
             }
             hideAfterTimeout();
         }
+    }
+
+    public Integer getPosition() {
+        return this.pos;
     }
 
 

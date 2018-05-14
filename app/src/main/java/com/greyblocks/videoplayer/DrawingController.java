@@ -75,8 +75,8 @@ public class DrawingController {
 //        Float newX = (((float)point.x/(float)videoWidth)*(float)deviceWidth);
 //        Float newY = ((float)((float)point.y/(float)videoHeight)*(float)deviceHeight);
 
-        Float newX = (float)(point.x*1.05)+point.x;
-        Float newY = (float)(point.y*1.05)+point.y;
+        Float newX = (float)(point.x*.8)+point.x;
+        Float newY = (float)(point.y*.8)+point.y;
 
         newPoint.set(newX.intValue(),newY.intValue());
         return newPoint;
@@ -99,12 +99,13 @@ public class DrawingController {
         float yDiff         = midY - y1;
         double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
         double angleRadians = Math.toRadians(angle);
-        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
-        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
-        Point m3 = getMidPoint(new Point(x1,y1),new Point(x2,y2));
+//        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
+//        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
+//        Point m3 = getMidPoint(new Point(x1,y1),new Point(x2,y2));
 
         path.moveTo(x1, y1);
-        path.cubicTo(x1,y1-5,p3.x+30, p3.y+300, x2, y2-5);
+        path.cubicTo(x1,y1+7,p3.x+200, p3.y+200, x2, y2+7);
+
         canvas.drawPath(path, paint);
     }
 
@@ -141,7 +142,7 @@ public class DrawingController {
         Point newP3 = normalisePoint(p3);
         Point midPoint = getMidPoint(newP1,newP2);
         Point midPoint2 = getMidPoint(newP2,newP3);
-        drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,30,p2);
+        drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,0,p2);
     }
 
 }
