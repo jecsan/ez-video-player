@@ -821,6 +821,9 @@ public class CustomPlayerControlView extends FrameLayout {
 //                delayMs = 1000;
 //            }
             postDelayed(updateProgressAction, delayMs);
+            if(displayDrawingListener != null){
+                displayDrawingListener.onDisplayDrawing((int) position);
+            }
         }
     }
 
