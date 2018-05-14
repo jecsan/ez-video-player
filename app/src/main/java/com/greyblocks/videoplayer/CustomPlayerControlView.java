@@ -1201,5 +1201,13 @@ public class CustomPlayerControlView extends FrameLayout {
     }
 
 
+    private DisplayDrawingListener displayDrawingListener;
 
+    public void setDisplayDrawingListener(DisplayDrawingListener displayDrawingListener) {
+        this.displayDrawingListener = displayDrawingListener;
+    }
+
+    public interface DisplayDrawingListener{
+        void onDisplayDrawing(int pos);
+    }
 }
