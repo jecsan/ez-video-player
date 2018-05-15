@@ -814,7 +814,7 @@ public class CustomPlayerControlView extends FrameLayout {
         removeCallbacks(updateProgressAction);
         int playbackState = player == null ? Player.STATE_IDLE : player.getPlaybackState();
         if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
-            long delayMs = 10;
+            long delayMs = 1;
 //            if (player.getPlayWhenReady() && playbackState == Player.STATE_READY) {
 //                float playbackSpeed = player.getPlaybackParameters().speed;
 //                if (playbackSpeed <= 0.1f) {
@@ -839,7 +839,7 @@ public class CustomPlayerControlView extends FrameLayout {
             }
         }
 
-            Log.d(TAG,"POSITION"+position);
+            //Log.d(TAG,"POSITION"+position);
 
 
 //        if (!allowDraw) {

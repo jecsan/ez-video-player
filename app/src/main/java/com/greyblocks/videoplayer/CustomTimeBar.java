@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
@@ -641,7 +642,7 @@ public class CustomTimeBar extends View implements TimeBar {
         //TODO draw bitmaps here
         int bitmapWidth = 0;
         for(Bitmap b : samepleBitmaps){
-            canvas.drawBitmap(b,bitmapWidth,0,scrubberPaint);
+            canvas.drawBitmap(b,bitmapWidth,200,scrubberPaint);
             bitmapWidth+=imagesOffset;
         }
 
@@ -682,6 +683,8 @@ public class CustomTimeBar extends View implements TimeBar {
         if (duration <= 0) {
             return;
         }
+
+        String durationText = "4.55";
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
         int playheadY = scrubberBar.centerY();
         if (scrubberDrawable == null) {
@@ -689,7 +692,33 @@ public class CustomTimeBar extends View implements TimeBar {
                     : (isEnabled() ? scrubberEnabledSize : scrubberDisabledSize);
             //int playheadRadius = scrubberSize / 2;
             scrubberPaint.setStrokeWidth(8);
-            canvas.drawLine(playheadX, playheadY-70, playheadX, playheadY+70, scrubberPaint);
+            canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+200, scrubberPaint);
+            Log.d(TAG,"EEEEEEE="+playheadX);
+
+            Paint textPaint= new Paint();
+            textPaint.setColor(Color.BLACK);
+            textPaint.setTextSize(100);  //set text size
+            textPaint.setTextAlign(Paint.Align.CENTER);
+
+            float w = textPaint.measureText(durationText)/2;
+            float textSize = textPaint.getTextSize();
+
+            Integer rectStart = playheadX-150;
+            RectF mBoxRect = new RectF(rectStart,-200,playheadX+100,playheadY-50);
+            //canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
+            //Log.d(TAG,durationText);
+            canvas.drawText(durationText, playheadX, 20 ,textPaint);
+
+//            BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
+//            myBubble.setCornerRadius(20);
+//            myBubble.setPointerAlignment(BubbleDrawable.CENTER);
+//            myBubble.setPadding(25, 25, 25, 25);
+
+            if(displayDrawingListener != null){
+                displayDrawingListener.onDisplayDrawing(playheadX);
+            }
+
+            //canvas.dra
             //canvas.drawPoint(playheadX,playheadY,scrubberPaint);
 
         } else {
@@ -774,4 +803,13 @@ public class CustomTimeBar extends View implements TimeBar {
         return 0x33000000 | (adMarkerColor & 0x00FFFFFF);
     }
 
+    private CustomTimeBar.DisplayDrawingListener displayDrawingListener;
+
+    public void setDisplayDrawingListener(CustomTimeBar.DisplayDrawingListener displayDrawingListener) {
+        this.displayDrawingListener = displayDrawingListener;
+    }
+
+    public interface DisplayDrawingListener{
+        void onDisplayDrawing(int pos);
+    }
 }

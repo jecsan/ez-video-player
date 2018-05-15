@@ -200,22 +200,22 @@ public class MainActivity extends AppCompatActivity {
         //player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
 
-        Uri uri = Uri.parse("assets:///base_4.mp4");
+        Uri uri = Uri.parse("assets:///base_30fps.mp4");
 
         MediaSource mediaSource = buildMediaSource(uri);
 
-        dis = getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        DrawingController drawer = new DrawingController(dis);
-        drawer.drawKf2AtoK(new Point(385,234), new Point(371,188));
-        drawer.drawKf2KtoH(new Point(371,188), new Point(334,151));
-        drawer.drawKf2Line(new Point(334,151));
-        drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
-
-        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//        dis = getWindowManager().getDefaultDisplay();
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//
+//        DrawingController drawer = new DrawingController(dis);
+//        drawer.drawKf2AtoK(new Point(385,234), new Point(371,188));
+//        drawer.drawKf2KtoH(new Point(371,188), new Point(334,151));
+//        drawer.drawKf2Line(new Point(334,151));
+//        drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
+//
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
         BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
         myBubble.setCornerRadius(20);
@@ -232,21 +232,19 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams LLParams = new RelativeLayout.LayoutParams(new FrameLayout.LayoutParams(500,200));
         LLParams.topMargin = 421;
         LLParams.leftMargin = 693;
-
         dialogLayout.setLayoutParams(LLParams);
-
-
         TextView rowTextView = new TextView(this);
         rowTextView.setText("When winding up, pull your leg back 50° + Bend at the knee to 90°.");
         rowTextView.setTextColor(Color.WHITE);
         rowTextView.setWidth(200);
         dialogLayout.setBackgroundDrawable(myBubble);
         dialogLayout.addView(rowTextView);
-        playerView.addView(dialogLayout);
+       // playerView.addView(dialogLayout);
 
         player.prepare(mediaSource, false, false);
         //player.setPlayWhenReady(playWhenReady);
-        player.seekTo(0, 3610);
+        //player.seekTo(0, 3610);
+        player.seekTo(0,3700);
         //player.seekTo(0,  0);
 
 

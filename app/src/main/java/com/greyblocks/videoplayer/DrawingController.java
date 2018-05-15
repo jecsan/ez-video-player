@@ -32,8 +32,8 @@ public class DrawingController {
     public DrawingController(Display dis) {
         this.deviceWidth = dis.getWidth();
         this.deviceHeight = dis.getHeight();
-        Log.d(TAG,"WIDTH"+deviceWidth);
-        Log.d(TAG,"WIDTH"+deviceHeight);
+//        Log.d(TAG,"WIDTH"+deviceWidth);
+//        Log.d(TAG,"WIDTH"+deviceHeight);
         bg = Bitmap.createBitmap(videoWidth, videoHeight, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bg);
     }

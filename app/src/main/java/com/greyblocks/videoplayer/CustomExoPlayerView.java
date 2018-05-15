@@ -3,16 +3,23 @@ package com.greyblocks.videoplayer;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.math.MathUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ControlDispatcher;
 import com.google.android.exoplayer2.DefaultControlDispatcher;
@@ -213,6 +222,7 @@ public class CustomExoPlayerView extends FrameLayout {
     private boolean controllerHideDuringAds;
     private boolean controllerHideOnTouch;
     private int textureViewRotation;
+    private boolean allowDraw = true;
 
     public CustomExoPlayerView(Context context) {
         this(context, null);
@@ -222,7 +232,7 @@ public class CustomExoPlayerView extends FrameLayout {
         this(context, attrs, 0);
     }
 
-    public CustomExoPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomExoPlayerView(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         if (isInEditMode()) {
@@ -351,12 +361,59 @@ public class CustomExoPlayerView extends FrameLayout {
         this.controllerHideDuringAds = controllerHideDuringAds;
         this.useController = useController && controller != null;
         hideController();
-        
+
+        final Display dis = ((Activity) context).getWindowManager().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        View timebar =  findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress);
+
+        if(timebar != null){
+            Log.d("RAVVV","RAVVV");
+        }
+
+
         if(controller != null){
+
+
             controller.setDisplayDrawingListener(new CustomPlayerControlView.DisplayDrawingListener() {
                 @Override
                 public void onDisplayDrawing(int pos) {
-                    //TODO draw into drawing area
+
+
+                    player = controller.getPlayer();
+                    Integer roundedPos = pos - pos % 10;
+                    Log.d("POSITION","POSITION="+pos);
+                    //Log.d("PLAYBACK","PLAYBACK"+player.getCurrentPosition());
+                    Integer playerState = player.getPlaybackState();
+
+                    LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+                    //ll.setBackgroundResource(0);
+                    if (roundedPos >= 3610 && roundedPos <= 3620 ) {
+                        player.setPlayWhenReady(false);
+                        player.getPlaybackState();
+
+                        DrawingController drawer = new DrawingController(dis);
+                        drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
+                        drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
+                        drawer.drawKf2Line(new Point(334, 151));
+                        drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
+                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+                    } else if(roundedPos >= 3700 && roundedPos <= 3710) {
+                        player.setPlayWhenReady(false);
+                        player.getPlaybackState();
+
+                        DrawingController drawer = new DrawingController(dis);
+                        drawer.drawKf2AtoK(new Point(391, 235), new Point(393, 187));
+                        drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
+                        drawer.drawKf2Line(new Point(360, 157));
+                        drawer.drawKf2AtoKAngle(new Point(391, 235), new Point(393, 187), new Point(360, 157));
+                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+
+                    }  else if (playerState != 3) {
+
+                        ll.setBackgroundResource(0);
+                    }
                 }
             });
         }
