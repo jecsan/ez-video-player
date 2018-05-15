@@ -383,37 +383,44 @@ public class CustomExoPlayerView extends FrameLayout {
 
                     player = controller.getPlayer();
                     Integer roundedPos = pos - pos % 10;
-                    Log.d("POSITION","POSITION="+pos);
+                    //Log.d("POSITION","POSITION="+player.getCurrentPosition());
                     //Log.d("PLAYBACK","PLAYBACK"+player.getCurrentPosition());
                     Integer playerState = player.getPlaybackState();
 
                     LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
                     //ll.setBackgroundResource(0);
-                    if (roundedPos >= 3610 && roundedPos <= 3620 ) {
+                    if (roundedPos >= 3600 && roundedPos <= 3610 ) {
                         player.setPlayWhenReady(false);
                         player.getPlaybackState();
-
+                        allowDraw = false;
                         DrawingController drawer = new DrawingController(dis);
                         drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
                         drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
                         drawer.drawKf2Line(new Point(334, 151));
                         drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
                         ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-                    } else if(roundedPos >= 3700 && roundedPos <= 3710) {
-                        player.setPlayWhenReady(false);
-                        player.getPlaybackState();
-
-                        DrawingController drawer = new DrawingController(dis);
-                        drawer.drawKf2AtoK(new Point(391, 235), new Point(393, 187));
-                        drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
-                        drawer.drawKf2Line(new Point(360, 157));
-                        drawer.drawKf2AtoKAngle(new Point(391, 235), new Point(393, 187), new Point(360, 157));
-                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-
-                    }  else if (playerState != 3) {
-
+                    } else {
                         ll.setBackgroundResource(0);
+                        if (!allowDraw) {
+                            allowDraw = true;
+                            player.seekTo(3610);
+                        }
                     }
+//                    } else if(roundedPos >= 3700 && roundedPos <= 3710) {
+//                        player.setPlayWhenReady(false);
+//                        player.getPlaybackState();
+//
+//                        DrawingController drawer = new DrawingController(dis);
+//                        drawer.drawKf2AtoK(new Point(391, 235), new Point(393, 187));
+//                        drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
+//                        drawer.drawKf2Line(new Point(360, 157));
+//                        drawer.drawKf2AtoKAngle(new Point(391, 235), new Point(393, 187), new Point(360, 157));
+//                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//
+//                    }  else if (playerState != 3) {
+//
+//                        ll.setBackgroundResource(0);
+//                    }
                 }
             });
         }

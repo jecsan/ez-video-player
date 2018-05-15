@@ -684,7 +684,7 @@ public class CustomTimeBar extends View implements TimeBar {
             return;
         }
 
-        String durationText = "4.55";
+        String durationText = Long.toString(position);
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
         int playheadY = scrubberBar.centerY();
         if (scrubberDrawable == null) {
@@ -705,9 +705,9 @@ public class CustomTimeBar extends View implements TimeBar {
 
             Integer rectStart = playheadX-150;
             RectF mBoxRect = new RectF(rectStart,-200,playheadX+100,playheadY-50);
-            //canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
+            canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
             //Log.d(TAG,durationText);
-            canvas.drawText(durationText, playheadX, 20 ,textPaint);
+            canvas.drawText(durationText, playheadX, 50 ,textPaint);
 
 //            BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
 //            myBubble.setCornerRadius(20);
