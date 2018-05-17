@@ -687,7 +687,7 @@ public class CustomTimeBar extends View implements TimeBar {
         Float fPos = (float)position/(float)1000;
         Double intPos =(double) Math.round(fPos * 100) / 100;
 
-
+        Log.d("TIMEBAR","TIMEBAR="+position);
         String durationText = Double.toString(intPos);
 
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
@@ -725,8 +725,13 @@ public class CustomTimeBar extends View implements TimeBar {
     public void drawMarker(Canvas canvas, Integer playheadX,Integer playheadY) {
         Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
         Float perPx = (float)dis.getWidth()/(float)duration;
+        //Log.d("PERPX","perPx="+perPx);
+        // .46302748*3620
         //DrawingController drawer = new DrawingController(dis);
         //drawer.drawKf2AtoK(new Point(1667, 300), new Point(1800, 300));
+//        final Integer kf3Time = 3710;
+//        final Integer kf4Time = 3790;
+
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         Bitmap bg = Bitmap.createBitmap(dis.getWidth(), dis.getHeight(), Bitmap.Config.ARGB_8888);
@@ -755,17 +760,17 @@ public class CustomTimeBar extends View implements TimeBar {
         textPaint.setColor(Color.RED);
         textPaint.setTextSize(50);  //set text size
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("1", 1696, playheadY+15 ,textPaint);
-        canvas.drawText("2", 1777, playheadY+15 ,textPaint);
-        canvas.drawText("3", 1877, playheadY+15 ,textPaint);
+        canvas.drawText("1", 1705, playheadY+15 ,textPaint);
+        canvas.drawText("2", 1732, playheadY+15 ,textPaint);
+        canvas.drawText("3", 1769, playheadY+15 ,textPaint);
 
 
         Paint circleMarker = new Paint();
         circleMarker.setAntiAlias(true);
         circleMarker.setColor(Color.RED);
-        canvas.drawCircle(1696,playheadY+100,10,circleMarker);
-        canvas.drawCircle(1740,playheadY+100,10,circleMarker);
-        canvas.drawCircle(1780,playheadY+100,10,circleMarker);
+        canvas.drawCircle(1721,playheadY+100,7,circleMarker);
+        canvas.drawCircle(1757,playheadY+100,7,circleMarker);
+        canvas.drawCircle(1784,playheadY+100,7,circleMarker);
 
     }
 

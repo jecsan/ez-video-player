@@ -729,6 +729,9 @@ public class CustomPlayerControlView extends FrameLayout {
         long position = 0;
         long bufferedPosition = 0;
         long duration = 0;
+
+        Log.d("H","H="+player.getCurrentPosition());
+
         if (player != null) {
             long currentWindowTimeBarOffsetUs = 0;
             long durationUs = 0;
@@ -778,6 +781,9 @@ public class CustomPlayerControlView extends FrameLayout {
             }
             duration = C.usToMs(durationUs);
             position = C.usToMs(currentWindowTimeBarOffsetUs);
+
+            //Log.d("R","R="+player.getBufferedPosition());
+
             bufferedPosition = position;
             if (player.isPlayingAd()) {
                 position += player.getContentPosition();
@@ -804,6 +810,12 @@ public class CustomPlayerControlView extends FrameLayout {
         if (positionView != null && !scrubbing) {
             positionView.setText(Util.getStringForTime(formatBuilder, formatter, position));
         }
+
+
+        if(displayDrawingListener != null){
+            displayDrawingListener.onDisplayDrawing((int) position);
+        }
+
         if (timeBar != null) {
             timeBar.setPosition(position);
             timeBar.setBufferedPosition(bufferedPosition);
@@ -833,10 +845,9 @@ public class CustomPlayerControlView extends FrameLayout {
 //            } else {
 //                delayMs = 1000;
 //            }
+
             postDelayed(updateProgressAction, delayMs);
-            if(displayDrawingListener != null){
-                displayDrawingListener.onDisplayDrawing((int) position);
-            }
+            Log.d("CUSTOM","CUSTOM="+position);
         }
 
             //Log.d(TAG,"POSITION"+position);

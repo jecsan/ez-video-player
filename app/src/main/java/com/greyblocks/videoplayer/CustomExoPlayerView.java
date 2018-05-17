@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.math.MathUtils;
@@ -229,8 +230,8 @@ public class CustomExoPlayerView extends FrameLayout {
     private int textureViewRotation;
     private boolean allowDraw = false;
     private Integer prevKf = 0;
-    private Integer tsOffset = 15;
-
+    private Integer tsOffset = 10;
+    private boolean prevPaused = false;
 
     public CustomExoPlayerView(Context context) {
         this(context, null);
@@ -378,9 +379,11 @@ public class CustomExoPlayerView extends FrameLayout {
         final Integer kf3Time = 3710;
         final Integer kf4Time = 3790;
 
+
         if(controller != null){
             player = controller.getPlayer();
 
+            //Log.d("ZZZ","ZZZ="+controller.);
 
             controller.setDisplayDrawingListener(new CustomPlayerControlView.DisplayDrawingListener() {
                 @Override
@@ -390,23 +393,26 @@ public class CustomExoPlayerView extends FrameLayout {
                 Integer playerState = player.getPlaybackState();
 
                 LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-//                Log.d("STATE","STATE="+playerState);
+                Log.d("PLAYER","PLAYER="+pos);
 //                Log.d("lastKfTs","lastKfTs="+lastKfTs);
-                if (roundedPos >= kf2Time-tsOffset && roundedPos <= kf2Time+tsOffset && prevKf !=kf2Time) {
+                if (roundedPos >= kf2Time-tsOffset && roundedPos <= kf2Time+tsOffset && prevKf !=kf2Time && !prevPaused) {
+                    Log.d("STATE","ZZZ=");
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf2Time;
-                } else if (roundedPos >= kf3Time-tsOffset && roundedPos <= kf3Time+tsOffset && prevKf !=kf3Time) {
+                } else if (roundedPos >= kf3Time-tsOffset && roundedPos <= kf3Time+tsOffset && prevKf !=kf3Time && !prevPaused) {
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf3Time;
-                } else if (roundedPos >= kf4Time-tsOffset && roundedPos <= kf4Time+tsOffset && prevKf !=kf4Time) {
+                } else if (roundedPos >= kf4Time-tsOffset && roundedPos <= kf4Time+tsOffset && prevKf !=kf4Time && !prevPaused) {
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf4Time;
+                } else {
+                    //prevPaused = false;
                 }
 
                 }
@@ -667,6 +673,7 @@ public class CustomExoPlayerView extends FrameLayout {
     public void setControllerShowTimeoutMs(int controllerShowTimeoutMs) {
         Assertions.checkState(controller != null);
         this.controllerShowTimeoutMs = controllerShowTimeoutMs;
+
         if (controller.isVisible()) {
             // Update the controller's timeout if necessary.
             showController();
@@ -1091,12 +1098,32 @@ public class CustomExoPlayerView extends FrameLayout {
             } else {
                 maybeShowController(false);
             }
-            Log.d("STATE","playWhenReady="+playWhenReady);
-            Log.d("lastKfTs","playbackState="+playbackState);
+//            Log.d("STATE","playWhenReady="+playWhenReady);
+//            Log.d("lastKfTs","playbackState="+playbackState);
             if (playWhenReady) {
                 LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
                 ll.setVisibility(LinearLayout.INVISIBLE);
-                prevKf = 0;
+                if (prevKf != 0) {
+                    Log.d("prevKf","prevKf="+prevKf);
+                    Integer prev = prevKf;
+                    prevKf = 0;
+                    prevPaused = true;
+
+
+                    player.seekTo(prev);
+                }
+            }
+            if (playbackState == 3 && prevPaused){
+
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("STATE","playWhenReady=");
+                        prevPaused = false;
+                    }
+                }, 250);
             }
         }
 
