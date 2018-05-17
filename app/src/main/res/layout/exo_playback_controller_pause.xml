@@ -6,18 +6,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:minHeight="40dp"
         android:layout_gravity="bottom"
         android:layout_height="wrap_content">
+
+
+        <com.greyblocks.videoplayer.CustomTimeBar
+            android:id="@id/exo_progress"
+            android:layout_width="match_parent"
+            android:layout_height="101dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:paddingLeft="40dp"
+            android:scaleType="fitCenter"
+            android:src="@android:color/transparent">
+
+        </com.greyblocks.videoplayer.CustomTimeBar>
+
         <ImageButton
             android:id="@+id/exo_play"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@android:color/black"
             android:scaleType="fitCenter"
-            android:gravity="center"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
             android:textSize="25sp"
 
             tools:text="Review"
@@ -30,27 +48,16 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@android:color/black"
-            android:gravity="center"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
             android:scaleType="fitCenter"
             android:textColor="@android:color/white"
             android:textSize="25sp"
             tools:text="Review" />
 
-    </FrameLayout>
 
+    </RelativeLayout>
 
-    <com.greyblocks.videoplayer.CustomTimeBar
-        android:id="@id/exo_progress"
-        android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="-2dp"
-        android:background="@android:color/transparent"
-        android:paddingLeft="0dp"
-        android:scaleType="fitCenter"
-        android:src="@android:color/transparent">
-
-    </com.greyblocks.videoplayer.CustomTimeBar>
 
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -119,10 +120,10 @@ public class CustomTimeBar extends View implements TimeBar {
     private final Runnable stopScrubbingRunnable;
     private final CopyOnWriteArraySet<OnScrubListener> listeners;
 
-    private final Integer imagesOffset = 100;
-    private final Integer thumbWidth = 150;
+    private final Integer imagesOffset = 160;
+    private final Integer thumbWidth = 170;
     private final Integer framesMsSkip = 200000;
-    private final Integer thumbHeight = 150;
+    private final Integer thumbHeight = 170;
 
     private int keyCountIncrement;
     private long keyTimeIncrement;
@@ -173,16 +174,16 @@ public class CustomTimeBar extends View implements TimeBar {
             Integer timeInMs = Integer.parseInt(time)*1000;
             Log.d(TAG, "Video Time:"+ Integer.toString(timeInMs));
 
-            Integer currentTime = 0;
-            while (timeInMs > currentTime ) {
-                Bitmap tmpBtm = retriever.getFrameAtTime(currentTime, MediaMetadataRetriever.OPTION_CLOSEST);
-                if (tmpBtm  != null) {
-                    Bitmap newBtmp = Bitmap.createScaledBitmap(tmpBtm, thumbWidth, thumbHeight, false);
-                    samepleBitmaps.add(newBtmp);
-                }
-                currentTime = 99999999;
-                //currentTime = currentTime+framesMsSkip;
-            }
+//            Integer currentTime = 0;
+//            while (timeInMs > currentTime ) {
+//                Bitmap tmpBtm = retriever.getFrameAtTime(currentTime, MediaMetadataRetriever.OPTION_CLOSEST);
+//                if (tmpBtm  != null) {
+//                    Bitmap newBtmp = Bitmap.createScaledBitmap(tmpBtm, thumbWidth, thumbHeight, false);
+//                    samepleBitmaps.add(newBtmp);
+//                }
+//                //currentTime = 99999999;
+//                //currentTime = currentTime+framesMsSkip;
+//            }
             Log.d(TAG, "Thumbnails count: "+Integer.toString(samepleBitmaps.size()));
         } catch(IOException ex) {
 
@@ -254,7 +255,7 @@ public class CustomTimeBar extends View implements TimeBar {
                 int playedAdMarkerColor = a.getInt(R.styleable.DefaultTimeBar_played_ad_marker_color,
                         getDefaultPlayedAdMarkerColor(adMarkerColor));
                 playedPaint.setColor(Color.TRANSPARENT);
-                scrubberPaint.setColor(Color.WHITE);
+                scrubberPaint.setColor(Color.GRAY);
                 bufferedPaint.setColor(Color.TRANSPARENT);
                 unplayedPaint.setColor(Color.TRANSPARENT);
                 adMarkerPaint.setColor(adMarkerColor);
@@ -642,7 +643,7 @@ public class CustomTimeBar extends View implements TimeBar {
         //TODO draw bitmaps here
         int bitmapWidth = 0;
         for(Bitmap b : samepleBitmaps){
-            canvas.drawBitmap(b,bitmapWidth,200,scrubberPaint);
+            canvas.drawBitmap(b,bitmapWidth,190,scrubberPaint);
             bitmapWidth+=imagesOffset;
         }
 
@@ -683,43 +684,29 @@ public class CustomTimeBar extends View implements TimeBar {
         if (duration <= 0) {
             return;
         }
+        Float fPos = (float)position/(float)1000;
+        Double intPos =(double) Math.round(fPos * 100) / 100;
 
-        String durationText = Long.toString(position);
+
+        String durationText = Double.toString(intPos);
+
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
+//        Log.d(TAG,"==============");
+//        Log.d(TAG,"RIGHT="+scrubberBar.right);
+//        Log.d(TAG,"LEFT="+scrubberBar.left);
+//        Log.d(TAG,"PROG="+progressBar.right);
+//        Log.d(TAG,"POS="+position);
+//        Log.d(TAG,"DURATION="+duration);
+//        Log.d(TAG,"==============");
+
         int playheadY = scrubberBar.centerY();
         if (scrubberDrawable == null) {
-            int scrubberSize = (scrubbing || isFocused()) ? scrubberDraggedSize
-                    : (isEnabled() ? scrubberEnabledSize : scrubberDisabledSize);
+            //int scrubberSize = (scrubbing || isFocused()) ? scrubberDraggedSize : (isEnabled() ? scrubberEnabledSize : scrubberDisabledSize);
             //int playheadRadius = scrubberSize / 2;
             scrubberPaint.setStrokeWidth(8);
-            canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+200, scrubberPaint);
-            Log.d(TAG,"EEEEEEE="+playheadX);
-
-            Paint textPaint= new Paint();
-            textPaint.setColor(Color.BLACK);
-            textPaint.setTextSize(100);  //set text size
-            textPaint.setTextAlign(Paint.Align.CENTER);
-
-            float w = textPaint.measureText(durationText)/2;
-            float textSize = textPaint.getTextSize();
-
-            Integer rectStart = playheadX-150;
-            RectF mBoxRect = new RectF(rectStart,-200,playheadX+100,playheadY-50);
-            canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
-            //Log.d(TAG,durationText);
-            canvas.drawText(durationText, playheadX, 50 ,textPaint);
-
-//            BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
-//            myBubble.setCornerRadius(20);
-//            myBubble.setPointerAlignment(BubbleDrawable.CENTER);
-//            myBubble.setPadding(25, 25, 25, 25);
-
-            if(displayDrawingListener != null){
-                displayDrawingListener.onDisplayDrawing(playheadX);
-            }
-
-            //canvas.dra
-            //canvas.drawPoint(playheadX,playheadY,scrubberPaint);
+            canvas.drawLine(playheadX, playheadY+30, playheadX, playheadY+150, scrubberPaint);
+            drawTsBubble(durationText,playheadX,playheadY,canvas);
+            drawMarker(canvas,playheadX,playheadY);
 
         } else {
             int scrubberDrawableWidth = scrubberDrawable.getIntrinsicWidth();
@@ -733,6 +720,86 @@ public class CustomTimeBar extends View implements TimeBar {
         }
 
 
+    }
+
+    public void drawMarker(Canvas canvas, Integer playheadX,Integer playheadY) {
+        Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
+        Float perPx = (float)dis.getWidth()/(float)duration;
+        //DrawingController drawer = new DrawingController(dis);
+        //drawer.drawKf2AtoK(new Point(1667, 300), new Point(1800, 300));
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        Bitmap bg = Bitmap.createBitmap(dis.getWidth(), dis.getHeight(), Bitmap.Config.ARGB_8888);
+
+
+        Paint linePaint= new Paint();
+        linePaint.setStrokeWidth(19);
+        linePaint.setColor(Color.WHITE);
+
+        canvas.drawLine(1740, playheadY+86, 1740, playheadY+200, linePaint);
+        canvas.drawLine(1740, playheadY+95, 1777, playheadY+95, linePaint);
+        canvas.drawLine(1777, playheadY+95, 1777, playheadY+10, linePaint);
+
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(3);
+        canvas.drawCircle(1677,playheadY,45,paint);
+        canvas.drawCircle(1777,playheadY,45,paint);
+        canvas.drawCircle(1877,playheadY,45,paint);
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.RED);
+        canvas.drawCircle(1777,playheadY,45,paint);
+
+
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.RED);
+        textPaint.setTextSize(50);  //set text size
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("1", 1696, playheadY+15 ,textPaint);
+        canvas.drawText("2", 1777, playheadY+15 ,textPaint);
+        canvas.drawText("3", 1877, playheadY+15 ,textPaint);
+
+
+        Paint circleMarker = new Paint();
+        circleMarker.setAntiAlias(true);
+        circleMarker.setColor(Color.RED);
+        canvas.drawCircle(1696,playheadY+100,10,circleMarker);
+        canvas.drawCircle(1740,playheadY+100,10,circleMarker);
+        canvas.drawCircle(1780,playheadY+100,10,circleMarker);
+
+    }
+
+    public void drawTsBubble(String durationText,Integer playheadX,Integer playheadY, Canvas canvas)  {
+        Path mPointer = new Path();
+        mPointer.setFillType(Path.FillType.EVEN_ODD);
+        Integer mPointerWidth = 40;
+        Integer mPointerHeight = 40;
+
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(80);  //set text size
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        Integer rectStart = playheadX-100;
+        RectF mBoxRect = new RectF(rectStart,10,playheadX+100,playheadY-40);
+        canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
+        mPointer.moveTo(playheadX-20, 123);
+        mPointer.rLineTo(mPointerWidth, 0);
+        mPointer.rLineTo(-(mPointerWidth / 2), mPointerHeight);
+        mPointer.rLineTo(-(mPointerWidth / 2), -mPointerHeight);
+        mPointer.close();
+        canvas.drawText(durationText, playheadX+5, 100 ,textPaint);
+        canvas.drawPath(mPointer, scrubberPaint);
+    }
+
+    private void drawKeyMaRker(String durationText,Integer playheadX,Integer playheadY, Canvas canvas) {
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.RED);
+        textPaint.setTextSize(50);  //set text size
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        Integer rectStart = playheadX-100;
+        RectF mBoxRect = new RectF(rectStart,10,playheadX+100,playheadY-40);
+        canvas.drawRoundRect(mBoxRect,5,5,scrubberPaint);
+        canvas.drawText(durationText, playheadX+5, 100 ,textPaint);
     }
 
     private void updateDrawableState() {

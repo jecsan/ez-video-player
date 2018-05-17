@@ -217,6 +217,16 @@ public class MainActivity extends AppCompatActivity {
 //        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
 //        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
+        dis = getWindowManager().getDefaultDisplay();
+        DrawingController drawer = new DrawingController(dis);
+        drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
+        drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
+        drawer.drawKf2Line(new Point(334, 151));
+        drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
+        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+        ll.setVisibility(LinearLayout.INVISIBLE);
+
         BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
         myBubble.setCornerRadius(20);
         myBubble.setPointerAlignment(BubbleDrawable.RIGHT);

@@ -9,7 +9,10 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ControlDispatcher;
@@ -221,8 +225,12 @@ public class CustomExoPlayerView extends FrameLayout {
     private boolean controllerAutoShow;
     private boolean controllerHideDuringAds;
     private boolean controllerHideOnTouch;
+    private Integer lastKfTs = 0;
     private int textureViewRotation;
-    private boolean allowDraw = true;
+    private boolean allowDraw = false;
+    private Integer prevKf = 0;
+    private Integer tsOffset = 15;
+
 
     public CustomExoPlayerView(Context context) {
         this(context, null);
@@ -366,61 +374,41 @@ public class CustomExoPlayerView extends FrameLayout {
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        View timebar =  findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress);
-
-        if(timebar != null){
-            Log.d("RAVVV","RAVVV");
-        }
-
+        final Integer kf2Time = 3620;
+        final Integer kf3Time = 3710;
+        final Integer kf4Time = 3790;
 
         if(controller != null){
+            player = controller.getPlayer();
 
 
             controller.setDisplayDrawingListener(new CustomPlayerControlView.DisplayDrawingListener() {
                 @Override
                 public void onDisplayDrawing(int pos) {
 
+                Integer roundedPos = pos - pos % 10;
+                Integer playerState = player.getPlaybackState();
 
-                    player = controller.getPlayer();
-                    Integer roundedPos = pos - pos % 10;
-                    //Log.d("POSITION","POSITION="+player.getCurrentPosition());
-                    //Log.d("PLAYBACK","PLAYBACK"+player.getCurrentPosition());
-                    Integer playerState = player.getPlaybackState();
+                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//                Log.d("STATE","STATE="+playerState);
+//                Log.d("lastKfTs","lastKfTs="+lastKfTs);
+                if (roundedPos >= kf2Time-tsOffset && roundedPos <= kf2Time+tsOffset && prevKf !=kf2Time) {
+                    player.setPlayWhenReady(false);
+                    ll.setVisibility(LinearLayout.VISIBLE);
+                    allowDraw = true;
+                    prevKf = kf2Time;
+                } else if (roundedPos >= kf3Time-tsOffset && roundedPos <= kf3Time+tsOffset && prevKf !=kf3Time) {
+                    player.setPlayWhenReady(false);
+                    ll.setVisibility(LinearLayout.VISIBLE);
+                    allowDraw = true;
+                    prevKf = kf3Time;
+                } else if (roundedPos >= kf4Time-tsOffset && roundedPos <= kf4Time+tsOffset && prevKf !=kf4Time) {
+                    player.setPlayWhenReady(false);
+                    ll.setVisibility(LinearLayout.VISIBLE);
+                    allowDraw = true;
+                    prevKf = kf4Time;
+                }
 
-                    LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-                    //ll.setBackgroundResource(0);
-                    if (roundedPos >= 3600 && roundedPos <= 3610 ) {
-                        player.setPlayWhenReady(false);
-                        player.getPlaybackState();
-                        allowDraw = false;
-                        DrawingController drawer = new DrawingController(dis);
-                        drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
-                        drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
-                        drawer.drawKf2Line(new Point(334, 151));
-                        drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
-                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-                    } else {
-                        ll.setBackgroundResource(0);
-                        if (!allowDraw) {
-                            allowDraw = true;
-                            player.seekTo(3610);
-                        }
-                    }
-//                    } else if(roundedPos >= 3700 && roundedPos <= 3710) {
-//                        player.setPlayWhenReady(false);
-//                        player.getPlaybackState();
-//
-//                        DrawingController drawer = new DrawingController(dis);
-//                        drawer.drawKf2AtoK(new Point(391, 235), new Point(393, 187));
-//                        drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
-//                        drawer.drawKf2Line(new Point(360, 157));
-//                        drawer.drawKf2AtoKAngle(new Point(391, 235), new Point(393, 187), new Point(360, 157));
-//                        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-//
-//                    }  else if (playerState != 3) {
-//
-//                        ll.setBackgroundResource(0);
-//                    }
                 }
             });
         }
@@ -1102,6 +1090,13 @@ public class CustomExoPlayerView extends FrameLayout {
                 hideController();
             } else {
                 maybeShowController(false);
+            }
+            Log.d("STATE","playWhenReady="+playWhenReady);
+            Log.d("lastKfTs","playbackState="+playbackState);
+            if (playWhenReady) {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+                ll.setVisibility(LinearLayout.INVISIBLE);
+                prevKf = 0;
             }
         }
 

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
 
     <com.google.android.exoplayer2.ui.AspectRatioFrameLayout android:id="@id/exo_content_frame"
         android:layout_width="match_parent"
@@ -25,6 +27,20 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/drawing_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/kf3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/kf3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"></LinearLayout>
@@ -53,12 +69,12 @@
         android:layout_height="match_parent"
         android:layout_toEndOf="@id/exo_content_frame" />
 
+
+
     <com.greyblocks.videoplayer.CustomPlayerControlView
         android:id="@id/exo_controller_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-
 
 
 </RelativeLayout>
