@@ -738,21 +738,16 @@ public class CustomTimeBar extends View implements TimeBar {
 
 
         final Integer kf2Start =  (int)(kf2Time*perPx)+29;
-        final Integer kf3Start = (int)(kf3Time*perPx)+29;;
-        final Integer kf4Start = (int)(kf4Time*perPx)+27;;
+        final Integer kf3Start = (int)(kf3Time*perPx)+28;;
+        final Integer kf4Start = (int)(kf4Time*perPx)+26;;
+
+        final Integer kf3Bubble = kf2Start+95;
+        final Integer kf4Bubble = kf2Start+190;
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         Bitmap bg = Bitmap.createBitmap(dis.getWidth(), dis.getHeight(), Bitmap.Config.ARGB_8888);
 
-
-        Paint linePaint= new Paint();
-        linePaint.setStrokeWidth(19);
-        linePaint.setColor(Color.WHITE);
-
-        canvas.drawLine(kf2Start, playheadY+86, kf2Start, playheadY+200, linePaint);
-        canvas.drawLine(kf3Start, playheadY+95, kf3Start, playheadY+95, linePaint);
-        canvas.drawLine(kf4Start, playheadY+95, kf4Start, playheadY+10, linePaint);
 
         // circules
         paint.setColor(Color.GRAY  );
@@ -771,11 +766,30 @@ public class CustomTimeBar extends View implements TimeBar {
         textPaint.setTextSize(50);  //set text size
         textPaint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText("1", kf2Start, playheadY+15 ,textPaint);
-        canvas.drawText("2", kf2Start+95, playheadY+15 ,textPaint);
-        canvas.drawText("3", kf2Start+190, playheadY+15 ,textPaint);
+        canvas.drawText("2", kf3Bubble, playheadY+15 ,textPaint);
+        canvas.drawText("3", kf4Bubble, playheadY+15 ,textPaint);
 
 
         canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+180, scrubberPaint);
+
+
+        // connecting lines
+        Paint linePaint= new Paint();
+        linePaint.setStrokeWidth(19);
+        linePaint.setColor(Color.GRAY);
+
+        if (position == kf3Time) {
+            canvas.drawLine(kf3Start, playheadY+86, kf3Start, playheadY+200, linePaint);
+            canvas.drawLine(kf3Start, playheadY+95, kf3Bubble, playheadY+95, linePaint);
+            canvas.drawLine(kf3Bubble, playheadY+95, kf3Bubble, playheadY+45, linePaint);
+        }
+
+
+        if (position == kf4Time) {
+            canvas.drawLine(kf4Start, playheadY+86, kf4Start, playheadY+200, linePaint);
+            canvas.drawLine(kf4Start, playheadY+95, kf4Bubble, playheadY+95, linePaint);
+            canvas.drawLine(kf4Bubble, playheadY+105, kf4Bubble, playheadY+45, linePaint);
+        }
 
         Paint circleMarker = new Paint();
         circleMarker.setAntiAlias(true);
@@ -783,6 +797,11 @@ public class CustomTimeBar extends View implements TimeBar {
         canvas.drawCircle(kf2Start,playheadY+100,10,circleMarker);
         canvas.drawCircle(kf3Start,playheadY+100,10,circleMarker);
         canvas.drawCircle(kf4Start,playheadY+100,10,circleMarker);
+
+
+//        canvas.drawLine(kf3Time, playheadY+95, kf3Time, playheadY+95, linePaint);
+//        canvas.drawLine(kf3Time, playheadY+95, kf3Time, playheadY+10, linePaint);
+
 
     }
 
