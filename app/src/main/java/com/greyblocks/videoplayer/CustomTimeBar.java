@@ -687,7 +687,7 @@ public class CustomTimeBar extends View implements TimeBar {
         Float fPos = (float)position/(float)1000;
         Double intPos =(double) Math.round(fPos * 100) / 100;
 
-        Log.d("TIMEBAR","TIMEBAR="+position);
+        //Log.d("TIMEBAR","TIMEBAR="+position);
         String durationText = Double.toString(intPos);
 
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
@@ -704,7 +704,6 @@ public class CustomTimeBar extends View implements TimeBar {
             //int scrubberSize = (scrubbing || isFocused()) ? scrubberDraggedSize : (isEnabled() ? scrubberEnabledSize : scrubberDisabledSize);
             //int playheadRadius = scrubberSize / 2;
             scrubberPaint.setStrokeWidth(8);
-            canvas.drawLine(playheadX, playheadY+30, playheadX, playheadY+150, scrubberPaint);
             drawTsBubble(durationText,playheadX,playheadY,canvas);
             drawMarker(canvas,playheadX,playheadY);
 
@@ -732,6 +731,16 @@ public class CustomTimeBar extends View implements TimeBar {
 //        final Integer kf3Time = 3710;
 //        final Integer kf4Time = 3790;
 
+        final Integer kf2Time = 3620;
+        final Integer kf3Time = 3720;
+        final Integer kf4Time = 3820;
+
+
+
+        final Integer kf2Start =  (int)(kf2Time*perPx)+29;
+        final Integer kf3Start = (int)(kf3Time*perPx)+29;;
+        final Integer kf4Start = (int)(kf4Time*perPx)+27;;
+
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         Bitmap bg = Bitmap.createBitmap(dis.getWidth(), dis.getHeight(), Bitmap.Config.ARGB_8888);
@@ -741,36 +750,39 @@ public class CustomTimeBar extends View implements TimeBar {
         linePaint.setStrokeWidth(19);
         linePaint.setColor(Color.WHITE);
 
-        canvas.drawLine(1740, playheadY+86, 1740, playheadY+200, linePaint);
-        canvas.drawLine(1740, playheadY+95, 1777, playheadY+95, linePaint);
-        canvas.drawLine(1777, playheadY+95, 1777, playheadY+10, linePaint);
+        canvas.drawLine(kf2Start, playheadY+86, kf2Start, playheadY+200, linePaint);
+        canvas.drawLine(kf3Start, playheadY+95, kf3Start, playheadY+95, linePaint);
+        canvas.drawLine(kf4Start, playheadY+95, kf4Start, playheadY+10, linePaint);
 
-        paint.setColor(Color.WHITE);
+        // circules
+        paint.setColor(Color.GRAY  );
         paint.setStrokeWidth(3);
-        canvas.drawCircle(1677,playheadY,45,paint);
-        canvas.drawCircle(1777,playheadY,45,paint);
-        canvas.drawCircle(1877,playheadY,45,paint);
+        canvas.drawCircle(kf2Start,playheadY,45,paint);
+        canvas.drawCircle(kf2Start+95,playheadY,45,paint);
+        canvas.drawCircle(kf2Start+190,playheadY,45,paint);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.RED);
-        canvas.drawCircle(1777,playheadY,45,paint);
+        canvas.drawCircle(kf2Start,playheadY,45,paint);
 
 
         Paint textPaint= new Paint();
         textPaint.setColor(Color.RED);
         textPaint.setTextSize(50);  //set text size
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("1", 1705, playheadY+15 ,textPaint);
-        canvas.drawText("2", 1732, playheadY+15 ,textPaint);
-        canvas.drawText("3", 1769, playheadY+15 ,textPaint);
+        canvas.drawText("1", kf2Start, playheadY+15 ,textPaint);
+        canvas.drawText("2", kf2Start+95, playheadY+15 ,textPaint);
+        canvas.drawText("3", kf2Start+190, playheadY+15 ,textPaint);
 
+
+        canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+180, scrubberPaint);
 
         Paint circleMarker = new Paint();
         circleMarker.setAntiAlias(true);
         circleMarker.setColor(Color.RED);
-        canvas.drawCircle(1721,playheadY+100,7,circleMarker);
-        canvas.drawCircle(1757,playheadY+100,7,circleMarker);
-        canvas.drawCircle(1784,playheadY+100,7,circleMarker);
+        canvas.drawCircle(kf2Start,playheadY+100,10,circleMarker);
+        canvas.drawCircle(kf3Start,playheadY+100,10,circleMarker);
+        canvas.drawCircle(kf4Start,playheadY+100,10,circleMarker);
 
     }
 

@@ -230,8 +230,9 @@ public class CustomExoPlayerView extends FrameLayout {
     private int textureViewRotation;
     private boolean allowDraw = false;
     private Integer prevKf = 0;
-    private Integer tsOffset = 10;
+    private Integer tsOffset = 30;
     private boolean prevPaused = false;
+    public Integer nextKf = 0;
 
     public CustomExoPlayerView(Context context) {
         this(context, null);
@@ -376,43 +377,39 @@ public class CustomExoPlayerView extends FrameLayout {
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         final Integer kf2Time = 3620;
-        final Integer kf3Time = 3710;
-        final Integer kf4Time = 3790;
+        final Integer kf3Time = 3720;
+        final Integer kf4Time = 3820;
 
 
         if(controller != null){
             player = controller.getPlayer();
 
-            //Log.d("ZZZ","ZZZ="+controller.);
-
             controller.setDisplayDrawingListener(new CustomPlayerControlView.DisplayDrawingListener() {
                 @Override
                 public void onDisplayDrawing(int pos) {
-
                 Integer roundedPos = pos - pos % 10;
-                Integer playerState = player.getPlaybackState();
-
                 LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-                Log.d("PLAYER","PLAYER="+pos);
-//                Log.d("lastKfTs","lastKfTs="+lastKfTs);
+                Log.d("ROUNDED","ROUNDED="+roundedPos);
                 if (roundedPos >= kf2Time-tsOffset && roundedPos <= kf2Time+tsOffset && prevKf !=kf2Time && !prevPaused) {
-                    Log.d("STATE","ZZZ=");
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf2Time;
+                    nextKf = kf2Time+tsOffset+10;
                 } else if (roundedPos >= kf3Time-tsOffset && roundedPos <= kf3Time+tsOffset && prevKf !=kf3Time && !prevPaused) {
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf3Time;
+                    nextKf = kf3Time+tsOffset+10;
                 } else if (roundedPos >= kf4Time-tsOffset && roundedPos <= kf4Time+tsOffset && prevKf !=kf4Time && !prevPaused) {
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
                     allowDraw = true;
                     prevKf = kf4Time;
+                    nextKf = kf4Time+100;
                 } else {
-                    //prevPaused = false;
+                    //nextKf = 0;
                 }
 
                 }
@@ -1098,32 +1095,42 @@ public class CustomExoPlayerView extends FrameLayout {
             } else {
                 maybeShowController(false);
             }
-//            Log.d("STATE","playWhenReady="+playWhenReady);
-//            Log.d("lastKfTs","playbackState="+playbackState);
-            if (playWhenReady) {
-                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-                ll.setVisibility(LinearLayout.INVISIBLE);
-                if (prevKf != 0) {
-                    Log.d("prevKf","prevKf="+prevKf);
+            Log.d("STATE","playWhenReady="+playWhenReady);
+            Log.d("lastKfTs","playbackState="+playbackState);
+            if (!playWhenReady) {
+                if (prevKf != 0 && !prevPaused) {
                     Integer prev = prevKf;
                     prevKf = 0;
                     prevPaused = true;
-
-
                     player.seekTo(prev);
                 }
+            } else if (!prevPaused) {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+                ll.setVisibility(LinearLayout.INVISIBLE);
             }
-            if (playbackState == 3 && prevPaused){
 
+            if (playbackState == 3 && prevPaused && playWhenReady){
+                Integer next = nextKf;
+                nextKf = 0;
+                prevPaused = false;
+                player.seekTo(next);
+                //prevPaused = false;
+                //prevPaused = false;
+                //Log.d("NEXT","FROM PAUSE="+next);
+//                final Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//
+//                        prevPaused = false;
+//
+//                    }
+//                }, 20);
+                if (next != 0 ){
+                   // player.seekTo(next);
+                }
 
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("STATE","playWhenReady=");
-                        prevPaused = false;
-                    }
-                }, 250);
             }
         }
 

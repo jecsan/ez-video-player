@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         player.prepare(mediaSource, false, false);
         //player.setPlayWhenReady(playWhenReady);
         //player.seekTo(0, 3610);
+        player.setVolume(0);
         player.seekTo(0,0);
         //player.seekTo(0,  0);
 

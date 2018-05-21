@@ -730,7 +730,7 @@ public class CustomPlayerControlView extends FrameLayout {
         long bufferedPosition = 0;
         long duration = 0;
 
-        Log.d("H","H="+player.getCurrentPosition());
+        //Log.d("H","H="+player.getCurrentPosition());
 
         if (player != null) {
             long currentWindowTimeBarOffsetUs = 0;
@@ -847,7 +847,7 @@ public class CustomPlayerControlView extends FrameLayout {
 //            }
 
             postDelayed(updateProgressAction, delayMs);
-            Log.d("CUSTOM","CUSTOM="+position);
+            //Log.d("CUSTOM","CUSTOM="+position);
         }
 
             //Log.d(TAG,"POSITION"+position);
