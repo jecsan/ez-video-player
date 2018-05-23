@@ -1,6 +1,10 @@
 package com.greyblocks.videoplayer;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +18,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -55,6 +60,9 @@ import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvicto
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +80,12 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import api.DefaultState;
+import api.ErrorState;
+import api.MyViewModelFactory;
+import api.VideoState;
+import viewmodel.VideoViewModel;
 
 
 /*
@@ -106,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     public ArrayList<Bitmap> framesArray = new ArrayList<>();
 
+    private VideoViewModel videoViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +134,35 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         playerView = findViewById(R.id.video_view);
+
+        videoViewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication())).get(VideoViewModel.class);
+        //Observer the live data for changes
+        videoViewModel.getMutableLiveData().observe(this, new Observer<VideoState>() {
+            @Override
+            public void onChanged(@Nullable VideoState videoState) {
+                if(videoState instanceof DefaultState){
+                    if(((DefaultState) videoState).component1() != null){
+
+                        JsonReader jsonReader = JsonReader.of(((DefaultState) videoState).component1().source());
+                        try {
+                            String json = ((DefaultState) videoState).component1().string();
+                            Log.d("JSON RESPONSE", json);
+                            //TODO use the data obtained from the API and pass to CustomExoPlayerView, maybe delay some parts of player initialization
+                            //until we have the data?
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }
+                else if (videoState instanceof ErrorState){
+
+                }
+            }
+        });
+        //Actually call the api to get the video data
+        videoViewModel.loadVideoData();
     }
 
     private void prepareCache(){
