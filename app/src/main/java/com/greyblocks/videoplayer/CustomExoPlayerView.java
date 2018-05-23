@@ -59,6 +59,8 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import java.util.List;
 
+import api.models.Frames;
+
 /**
  * A high level view for {@link Player} media playbacks. It displays video, subtitles and album art
  * during playback, and displays playback controls using a {@link PlayerControlView}.
@@ -1156,5 +1158,10 @@ public class CustomExoPlayerView extends FrameLayout {
                 int oldBottom) {
             applyTextureViewRotation((TextureView) view, textureViewRotation);
         }
+    }
+
+    public void setFrameData(Frames frameData){
+        controller.getTimeBar().setFrameData(frameData);
+//        controller
     }
 }

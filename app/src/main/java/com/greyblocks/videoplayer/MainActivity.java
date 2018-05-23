@@ -61,13 +61,18 @@ import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -81,10 +86,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Element;
+
 import api.DefaultState;
 import api.ErrorState;
 import api.MyViewModelFactory;
 import api.VideoState;
+import api.models.Frames;
+import okio.Buffer;
+import okio.BufferedSource;
 import viewmodel.VideoViewModel;
 
 
@@ -121,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Bitmap> framesArray = new ArrayList<>();
 
     private VideoViewModel videoViewModel;
-
+    Moshi moshi = new Moshi.Builder().build();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,15 +153,25 @@ public class MainActivity extends AppCompatActivity {
                 if(videoState instanceof DefaultState){
                     if(((DefaultState) videoState).component1() != null){
 
-                        JsonReader jsonReader = JsonReader.of(((DefaultState) videoState).component1().source());
-                        try {
-                            String json = ((DefaultState) videoState).component1().string();
-                            Log.d("JSON RESPONSE", json);
+                        Frames frames = videoState.getData().getFrames();
+                        playerView.setFrameData(frames);
+
+//                        Type type = Types.newParameterizedType(Map.class, Object.class, Map.class);
+//                        JsonAdapter<Map<Object,Map>> adapter = moshi.adapter(type);
+
+
+//                        try {
+//                            String json = ((DefaultState) videoState).component1().source().readUtf8();
+//                            Map<Object,Map> map = adapter.fromJson(json);
+//                            map.get("frames")
+//                            JsonReader jsonReader = JsonReader.of(new Buffer().writeUtf8(json));
+//                            Log.d("Joed",((DefaultState) videoState).component1().getFrames().getKeyframe4().getKickleg().getAngles().toString());
+
                             //TODO use the data obtained from the API and pass to CustomExoPlayerView, maybe delay some parts of player initialization
                             //until we have the data?
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 
                     }
 

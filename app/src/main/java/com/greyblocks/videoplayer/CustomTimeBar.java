@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import api.models.Frames;
+
 public class CustomTimeBar extends View implements TimeBar {
 
     /**
@@ -914,5 +916,9 @@ public class CustomTimeBar extends View implements TimeBar {
 
     public interface DisplayDrawingListener{
         void onDisplayDrawing(int pos);
+    }
+
+    public void setFrameData(Frames frameData){
+        Log.d("Joed","Set frame data from timebar "+frameData);
     }
 }
