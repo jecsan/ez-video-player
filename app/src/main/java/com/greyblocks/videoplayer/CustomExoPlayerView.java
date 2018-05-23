@@ -1191,14 +1191,15 @@ public class CustomExoPlayerView extends FrameLayout {
                 drawer.drawKf2Line(new Point(334, 151));
                 drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
             } else if (prev == kf3Time) {
-                drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
-                drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
-                drawer.drawKf2Line(new Point(360, 157));
+                drawer.drawBall(new Point(391, 235));
                 //drawer.drawKf2AtoKAngle(new Point(398,235), new Point(393,187),new Point(360,157));
             } else if (prev == kf4Time) {
-                drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
-                drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
-                drawer.drawKf2Line(new Point(374, 158));
+                drawer.drawKf4HtoN(new Point(353, 93), new Point(369, 78));
+                drawer.drawKf4HtoH(new Point(353, 93), new Point(354, 158));
+                drawer.drawKf2Line(new Point(354, 158));
+                drawer.drawKf4AtoKAngle(new Point(369, 78), new Point(353, 38));
+
+                //drawer.drawKf2Line(new Point(374, 158));
                 //drawer.drawKf2AtoKAngle(new Point(393,235), new Point(403,187),new Point(374,158));
             } else {
                 ll.setVisibility(LinearLayout.INVISIBLE);
