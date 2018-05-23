@@ -131,6 +131,13 @@ public class DrawingController {
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
         int radius = 20;
+        int midX            = x1 + ((x2 - x1) / 2);
+        int midY            = y1 + ((y2 - y1) / 2);
+        float xDiff         = midX - x1;
+        float yDiff         = midY - y1;
+        double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
+
+        angle= Math.abs(angle);
         paint.setStrokeCap(Paint.Cap.SQUARE);
         RectF oval = new RectF(x1 - radius, y1 - radius, x2 + radius, y2 + radius);
         paint.setColor(Color.parseColor(color));
@@ -186,7 +193,7 @@ public class DrawingController {
     public void drawKf4AtoKAngle(Point p1, Point p2) {
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
-        drawK4Curve(newP2.x,newP2.y,newP1.x,newP1.y,0,newP2,"#00ff03");
+        drawK4Curve(newP2.x,newP2.y,newP1.x,newP1.y,"#00ff03");
     }
 
     public static double angleBetweenPoints(Point a, Point b) {
