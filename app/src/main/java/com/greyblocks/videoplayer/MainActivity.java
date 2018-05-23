@@ -217,15 +217,44 @@ public class MainActivity extends AppCompatActivity {
 //        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
 //        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
 
-        dis = getWindowManager().getDefaultDisplay();
-        DrawingController drawer = new DrawingController(dis);
-        drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
-        drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
-        drawer.drawKf2Line(new Point(334, 151));
-        drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
-        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-        ll.setVisibility(LinearLayout.INVISIBLE);
+//        dis = getWindowManager().getDefaultDisplay();
+//        DrawingController kf2Drawer = new DrawingController(dis);
+//        kf2Drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
+//        kf2Drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
+//        kf2Drawer.drawKf2Line(new Point(334, 151));
+//
+//        kf2Drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
+//        kf2Drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
+//        kf2Drawer.drawKf2Line(new Point(355, 158));
+//
+//        kf2Drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
+//        kf2Drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
+//        kf2Drawer.drawKf2Line(new Point(355, 158));
+//
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//        ll.setBackgroundDrawable(new BitmapDrawable(kf2Drawer.getBitmap()));
+        //ll.setVisibility(LinearLayout.INVISIBLE);
+
+        //kf2Drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
+
+//        DrawingController kf3Drawer = new DrawingController(dis);
+//        kf3Drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
+//        kf3Drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
+//        kf3Drawer.drawKf2Line(new Point(355, 158));
+//        kf3Drawer.drawKf2AtoKAngle(new Point(261, 170), new Point(300, 193), new Point(355, 151));
+//        LinearLayout kf3 = (LinearLayout) findViewById(R.id.draw_area);
+//        kf3.setBackgroundDrawable(new BitmapDrawable(kf3Drawer.getBitmap()));
+//
+//        //kf3.setVisibility(LinearLayout.INVISIBLE);
+//
+//        DrawingController kf4Drawer = new DrawingController(dis);
+//        kf4Drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
+//        kf4Drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
+//        kf4Drawer.drawKf2Line(new Point(355, 158));
+//        //kf3Drawer.drawKf2AtoKAngle(new Point(261, 170), new Point(300, 193), new Point(355, 151));
+//        LinearLayout kf4 = (LinearLayout) findViewById(R.id.draw_area);
+//        kf4.setBackgroundDrawable(new BitmapDrawable(kf4Drawer.getBitmap()));
+
 
         BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
         myBubble.setCornerRadius(20);

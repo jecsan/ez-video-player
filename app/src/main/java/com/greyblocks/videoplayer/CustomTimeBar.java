@@ -732,8 +732,8 @@ public class CustomTimeBar extends View implements TimeBar {
 //        final Integer kf4Time = 3790;
 
         final Integer kf2Time = 3620;
-        final Integer kf3Time = 3720;
-        final Integer kf4Time = 3820;
+        final Integer kf3Time = 3695;
+        final Integer kf4Time = 3765;
 
 
 
@@ -744,34 +744,27 @@ public class CustomTimeBar extends View implements TimeBar {
         final Integer kf3Bubble = kf2Start+95;
         final Integer kf4Bubble = kf2Start+190;
 
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        Bitmap bg = Bitmap.createBitmap(dis.getWidth(), dis.getHeight(), Bitmap.Config.ARGB_8888);
-
-
-        // circules
-        paint.setColor(Color.GRAY  );
-        paint.setStrokeWidth(3);
-        canvas.drawCircle(kf2Start,playheadY,45,paint);
-        canvas.drawCircle(kf2Start+95,playheadY,45,paint);
-        canvas.drawCircle(kf2Start+190,playheadY,45,paint);
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        canvas.drawCircle(kf2Start,playheadY,45,paint);
-
-
-        Paint textPaint= new Paint();
-        textPaint.setColor(Color.RED);
-        textPaint.setTextSize(50);  //set text size
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("1", kf2Start, playheadY+15 ,textPaint);
-        canvas.drawText("2", kf3Bubble, playheadY+15 ,textPaint);
-        canvas.drawText("3", kf4Bubble, playheadY+15 ,textPaint);
-
-
+        //scrubber line
+        scrubberPaint.setStrokeWidth(19);
         canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+180, scrubberPaint);
 
+
+        Paint circlePaint = new Paint();
+        circlePaint.setAntiAlias(true);
+        circlePaint.setColor(Color.GRAY  );
+        circlePaint.setStrokeWidth(3);
+        drawKfBubble(kf2Start,circlePaint,canvas,playheadY,kf2Time);
+        drawKfBubble(kf2Start+95,circlePaint,canvas,playheadY,kf3Time);
+        drawKfBubble(kf2Start+190,circlePaint,canvas,playheadY,kf4Time);
+
+        //bubble text
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.RED);
+        textPaint.setTextSize(50);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        drawKfText(kf2Start,textPaint,canvas,playheadY,kf2Time,"1");
+        drawKfText(kf3Bubble,textPaint,canvas,playheadY,kf3Time,"2");
+        drawKfText(kf4Bubble,textPaint,canvas,playheadY,kf4Time,"3");
 
         // connecting lines
         Paint linePaint= new Paint();
@@ -781,28 +774,60 @@ public class CustomTimeBar extends View implements TimeBar {
         if (position == kf3Time) {
             canvas.drawLine(kf3Start, playheadY+86, kf3Start, playheadY+200, linePaint);
             canvas.drawLine(kf3Start, playheadY+95, kf3Bubble, playheadY+95, linePaint);
-            canvas.drawLine(kf3Bubble, playheadY+95, kf3Bubble, playheadY+45, linePaint);
+            canvas.drawLine(kf3Bubble, playheadY+105, kf3Bubble, playheadY+45, linePaint);
         }
 
-
-        if (position == kf4Time) {
+        else if (position == kf4Time) {
             canvas.drawLine(kf4Start, playheadY+86, kf4Start, playheadY+200, linePaint);
             canvas.drawLine(kf4Start, playheadY+95, kf4Bubble, playheadY+95, linePaint);
             canvas.drawLine(kf4Bubble, playheadY+105, kf4Bubble, playheadY+45, linePaint);
         }
 
+
         Paint circleMarker = new Paint();
         circleMarker.setAntiAlias(true);
-        circleMarker.setColor(Color.RED);
-        canvas.drawCircle(kf2Start,playheadY+100,10,circleMarker);
-        canvas.drawCircle(kf3Start,playheadY+100,10,circleMarker);
-        canvas.drawCircle(kf4Start,playheadY+100,10,circleMarker);
+        drawKfdot(kf2Start,circleMarker,canvas,playheadY,kf2Time);
+        drawKfdot(kf3Start,circleMarker,canvas,playheadY,kf3Time);
+        drawKfdot(kf4Start,circleMarker,canvas,playheadY,kf4Time);
+    }
 
+    public void drawConnectingLines(Integer kf, Paint paint, Canvas canvas, Integer playheadY) {
+        if (kf == position) {
+            paint.setColor(Color.GREEN);
+        } else {
+            paint.setColor(Color.GRAY);
+        }
+        canvas.drawLine(kf, playheadY+86, kf, playheadY+200, paint);
+    }
 
-//        canvas.drawLine(kf3Time, playheadY+95, kf3Time, playheadY+95, linePaint);
-//        canvas.drawLine(kf3Time, playheadY+95, kf3Time, playheadY+10, linePaint);
+    public void drawKfBubble(Integer kf, Paint paint, Canvas canvas, Integer playheadY,Integer kfTime) {
+        paint.setColor(Color.GRAY);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(kf,playheadY,45,paint);
+        if (kfTime == position) {
+            paint.setColor(Color.RED);
+            paint.setStrokeWidth(3);
+            paint.setStyle(Paint.Style.STROKE);
+            canvas.drawCircle(kf,playheadY,45,paint);
+        }
+    }
 
+    public void drawKfText(Integer kf, Paint paint, Canvas canvas, Integer playheadY,Integer kfTime, String text) {
+        if (kfTime == position) {
+            paint.setColor(Color.RED);
+        } else {
+            paint.setColor(Color.RED);
+        }
+        canvas.drawText(text, kf, playheadY+15 ,paint);
+    }
 
+    public void drawKfdot(Integer kf, Paint paint, Canvas canvas, Integer playheadY, Integer kfTime) {
+        if (kfTime == position) {
+            paint.setColor(Color.GREEN);
+        } else {
+            paint.setColor(Color.RED);
+        }
+        canvas.drawCircle(kf,playheadY+100,10,paint);
     }
 
     public void drawTsBubble(String durationText,Integer playheadX,Integer playheadY, Canvas canvas)  {

@@ -3,10 +3,12 @@ package com.greyblocks.videoplayer;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -83,11 +85,11 @@ public class DrawingController {
     }
 
 
-    public void drawCurvedArrow(int x1, int y1, int x2, int y2, int curveRadius, Point p3) {
+    public void drawCurvedArrow(int x1, int y1, int x2, int y2, int curveRadius, Point p3, String color) {
 
         Paint paint  = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(Color.RED);
+        paint.setColor(Color.parseColor(color));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
@@ -99,14 +101,26 @@ public class DrawingController {
         float yDiff         = midY - y1;
         double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
         double angleRadians = Math.toRadians(angle);
-//        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
-//        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
-//        Point m3 = getMidPoint(new Point(x1,y1),new Point(x2,y2));
+        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
+        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
+        Point m3 = getMidPoint(new Point(x1,y1),new Point(x2,y2));
 
-        path.moveTo(x1, y1);
-        path.cubicTo(x1,y1+7,p3.x+200, p3.y+200, x2, y2+7);
 
-        canvas.drawPath(path, paint);
+
+        p3.x = p3.x;
+        p3.y = p3.y;
+        angle= Math.abs(angle);
+        // Draw the circle at (x,y) with radius 250
+
+
+        int radius = 50;
+        Log.d("RERRR","RRR="+angle);
+        Log.d("RERRR","RRR="+angleRadians);
+        RectF oval = new RectF(p3.x - radius, p3.y - radius, p3.x + radius, p3.y + radius);
+        //canvas.drawArc(oval, -90, 90, false, paint);
+        paint.setColor(Color.parseColor(color));
+        canvas.drawArc(oval, (int)(90-angle), 151, false, paint);
+
     }
 
     private void drawDashedLines(Integer x, Integer y) {
@@ -123,7 +137,7 @@ public class DrawingController {
 
 
     public void drawKf2AtoK(Point p1, Point p2) {
-        drawLine("#00ffff", new Point(p1.x,p1.y), p2);
+        drawLine("#00ff03", new Point(p1.x,p1.y), p2);
     }
 
 
@@ -142,7 +156,27 @@ public class DrawingController {
         Point newP3 = normalisePoint(p3);
         Point midPoint = getMidPoint(newP1,newP2);
         Point midPoint2 = getMidPoint(newP2,newP3);
-        drawCurvedArrow(midPoint.x,midPoint.y,midPoint2.x,midPoint2.y,0,p2);
+        Log.d("M1","X="+midPoint.x);
+        Log.d("M1","Y="+midPoint.y);
+        Log.d("M1","X2="+midPoint2.x);
+        Log.d("M1","Y2="+midPoint2.y);
+
+        Log.d("ANGLE","ANGLLE="+angleBetweenPoints(midPoint,midPoint2));
+
+        drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,0,newP2,"#00ff03");
+    }
+
+    public static double angleBetweenPoints(Point a, Point b) {
+        double angleA = angleFromOriginCounterClockwise(a);
+        double angleB = angleFromOriginCounterClockwise(b);
+        return Math.abs(angleA-angleB);
+    }
+
+    public static double angleFromOriginCounterClockwise(Point a) {
+        double degrees = Math.toDegrees(Math.atan(a.y/a.x));
+        if(a.x < 0.0) return degrees+180.0;
+        else if(a.y < 0.0) return degrees+360.0;
+        else return degrees;
     }
 
 }

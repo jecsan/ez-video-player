@@ -203,6 +203,8 @@ import java.util.List;
  * PlayerView. This will cause the specified layout to be inflated instead of {@code
  * exo_player_view.xml} for only the instance on which the attribute is set.
  */
+
+
 public class CustomExoPlayerView extends FrameLayout {
 
     private static final int SURFACE_TYPE_NONE = 0;
@@ -233,6 +235,13 @@ public class CustomExoPlayerView extends FrameLayout {
     private Integer tsOffset = 30;
     private boolean prevPaused = false;
     public Integer nextKf = 0;
+
+    final Integer kf2Time = 3620;
+    final Integer kf3Time = 3695;
+    final Integer kf4Time = 3765;
+
+    public Long pausedPosition;
+
 
     public CustomExoPlayerView(Context context) {
         this(context, null);
@@ -372,14 +381,6 @@ public class CustomExoPlayerView extends FrameLayout {
         this.useController = useController && controller != null;
         hideController();
 
-        final Display dis = ((Activity) context).getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        final Integer kf2Time = 3620;
-        final Integer kf3Time = 3720;
-        final Integer kf4Time = 3820;
-
 
         if(controller != null){
             player = controller.getPlayer();
@@ -389,7 +390,7 @@ public class CustomExoPlayerView extends FrameLayout {
                 public void onDisplayDrawing(int pos) {
                 Integer roundedPos = pos - pos % 10;
                 LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-                Log.d("ROUNDED","ROUNDED="+roundedPos);
+                //Log.d("ROUNDED","ROUNDED="+roundedPos);
                 if (roundedPos >= kf2Time-tsOffset && roundedPos <= kf2Time+tsOffset && prevKf !=kf2Time && !prevPaused) {
                     player.setPlayWhenReady(false);
                     ll.setVisibility(LinearLayout.VISIBLE);
@@ -512,6 +513,7 @@ public class CustomExoPlayerView extends FrameLayout {
             hideArtwork();
         }
     }
+
 
     @Override
     public void setVisibility(int visibility) {
@@ -1102,18 +1104,36 @@ public class CustomExoPlayerView extends FrameLayout {
                     Integer prev = prevKf;
                     prevKf = 0;
                     prevPaused = true;
+                    drawLines(prev);
+                    pausedPosition = player.getCurrentPosition();
                     player.seekTo(prev);
+                    nextKf = 0;
                 }
             } else if (!prevPaused) {
                 LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
                 ll.setVisibility(LinearLayout.INVISIBLE);
             }
 
+            if (playbackState == 3 && !playWhenReady && prevPaused) {
+                //LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+                //ll.setVisibility(LinearLayout.INVISIBLE);
+                prevPaused = false;
+                nextKf = 0;
+                prevKf = 0;
+            }
+
             if (playbackState == 3 && prevPaused && playWhenReady){
                 Integer next = nextKf;
                 nextKf = 0;
+                prevKf = 0;
                 prevPaused = false;
-                player.seekTo(next);
+                LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+                ll.setVisibility(LinearLayout.INVISIBLE);
+                prevPaused = true;
+                if (next != 0) {
+                    player.seekTo(next);
+                }
+
                 //prevPaused = false;
                 //prevPaused = false;
                 //Log.d("NEXT","FROM PAUSE="+next);
@@ -1156,5 +1176,37 @@ public class CustomExoPlayerView extends FrameLayout {
                 int oldBottom) {
             applyTextureViewRotation((TextureView) view, textureViewRotation);
         }
+
+
+        public void drawLines(Integer prev) {
+            final Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            DrawingController drawer = new DrawingController(dis);
+
+            LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+            if (prev == kf2Time) {
+                drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
+                drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
+                drawer.drawKf2Line(new Point(334, 151));
+                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
+            } else if (prev == kf3Time) {
+                drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
+                drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
+                drawer.drawKf2Line(new Point(360, 157));
+                //drawer.drawKf2AtoKAngle(new Point(398,235), new Point(393,187),new Point(360,157));
+            } else if (prev == kf4Time) {
+                drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
+                drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
+                drawer.drawKf2Line(new Point(374, 158));
+                //drawer.drawKf2AtoKAngle(new Point(393,235), new Point(403,187),new Point(374,158));
+            } else {
+                ll.setVisibility(LinearLayout.INVISIBLE);
+            }
+
+
+            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+        }
+
     }
 }
