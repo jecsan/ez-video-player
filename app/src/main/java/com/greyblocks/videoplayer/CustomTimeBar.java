@@ -691,11 +691,11 @@ public class CustomTimeBar extends View implements TimeBar {
         String durationText = Double.toString(intPos);
 
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
-//        Log.d(TAG,"==============");
-//        Log.d(TAG,"RIGHT="+scrubberBar.right);
-//        Log.d(TAG,"LEFT="+scrubberBar.left);
-//        Log.d(TAG,"PROG="+progressBar.right);
-//        Log.d(TAG,"POS="+position);
+        Log.d(TAG,"==============");
+        Log.d(TAG,"RIGHT="+scrubberBar.right);
+        Log.d(TAG,"LEFT="+scrubberBar.left);
+        Log.d(TAG,"PROG="+progressBar.right);
+        Log.d(TAG,"playheadX="+playheadX);
 //        Log.d(TAG,"DURATION="+duration);
 //        Log.d(TAG,"==============");
 
@@ -731,18 +731,35 @@ public class CustomTimeBar extends View implements TimeBar {
 //        final Integer kf3Time = 3710;
 //        final Integer kf4Time = 3790;
 
-        final Integer kf2Time = 3620;
-        final Integer kf3Time = 3695;
-        final Integer kf4Time = 3765;
+//        final Integer kf2Time = 3620;
+//        final Integer kf3Time = 3695;
+//        final Integer kf4Time = 3765;
+
+        final Integer kf2Time = 1570;
+        final Integer kf3Time = 1730;
+        final Integer kf4Time = 1850;
 
 
+        final Integer kf2Start =  Util.constrainValue(kf2Time-28, 168, progressBar.right)+2;
+        final Integer kf3Start =  (int)(perPx*kf3Time)+28;
+        final Integer kf4Start =  (int)(perPx*kf4Time)+28;
 
-        final Integer kf2Start =  (int)(kf2Time*perPx)+29;
-        final Integer kf3Start = (int)(kf3Time*perPx)+28;;
-        final Integer kf4Start = (int)(kf4Time*perPx)+26;;
+//        Log.d("kf2Start","perPx="+perPx);
+//        Log.d("kf2Start","kf2Start="+kf2Start);
+//        Log.d("kf2Start","setStrokeWidth="+playheadX);
+//        Log.d("kf2Start","scrubberPadding="+scrubberPadding);
 
-        final Integer kf3Bubble = kf2Start+95;
-        final Integer kf4Bubble = kf2Start+190;
+
+        Integer kf3Bubble = kf2Start+95;
+        Integer kf4Bubble = kf2Start+190;
+
+        if (kf3Start > kf3Bubble)  {
+            kf3Bubble = kf3Start;
+        }
+
+        if (kf4Start > kf4Bubble)  {
+            kf4Bubble = kf4Start;
+        }
 
         //scrubber line
         scrubberPaint.setStrokeWidth(19);
@@ -754,8 +771,8 @@ public class CustomTimeBar extends View implements TimeBar {
         circlePaint.setColor(Color.GRAY  );
         circlePaint.setStrokeWidth(3);
         drawKfBubble(kf2Start,circlePaint,canvas,playheadY,kf2Time);
-        drawKfBubble(kf2Start+95,circlePaint,canvas,playheadY,kf3Time);
-        drawKfBubble(kf2Start+190,circlePaint,canvas,playheadY,kf4Time);
+        drawKfBubble(kf3Bubble,circlePaint,canvas,playheadY,kf3Time);
+        drawKfBubble(kf4Bubble,circlePaint,canvas,playheadY,kf4Time);
 
         //bubble text
         Paint textPaint= new Paint();
@@ -771,13 +788,13 @@ public class CustomTimeBar extends View implements TimeBar {
         linePaint.setStrokeWidth(19);
         linePaint.setColor(Color.GRAY);
 
-        if (position == kf3Time) {
+        if (position == kf3Time && kf3Start != kf3Bubble) {
             canvas.drawLine(kf3Start, playheadY+86, kf3Start, playheadY+200, linePaint);
             canvas.drawLine(kf3Start, playheadY+95, kf3Bubble, playheadY+95, linePaint);
             canvas.drawLine(kf3Bubble, playheadY+105, kf3Bubble, playheadY+45, linePaint);
         }
 
-        else if (position == kf4Time) {
+        else if (position == kf4Time && kf4Start != kf4Bubble) {
             canvas.drawLine(kf4Start, playheadY+86, kf4Start, playheadY+200, linePaint);
             canvas.drawLine(kf4Start, playheadY+95, kf4Bubble, playheadY+95, linePaint);
             canvas.drawLine(kf4Bubble, playheadY+105, kf4Bubble, playheadY+45, linePaint);

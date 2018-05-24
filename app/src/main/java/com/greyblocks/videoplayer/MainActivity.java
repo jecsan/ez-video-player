@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         playerView = findViewById(R.id.video_view);
 
+
         videoViewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication())).get(VideoViewModel.class);
         //Observer the live data for changes
         videoViewModel.getMutableLiveData().observe(this, new Observer<VideoState>() {
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             public void onExpand() {
                 ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
                 resizeWidthAnimation.setDuration(200);
+                playerView.setX(-200);
                 playerView.startAnimation(resizeWidthAnimation);
 
             }
@@ -245,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         //player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
 
-        Uri uri = Uri.parse("assets:///base_30fps.mp4");
+        Uri uri = Uri.parse("assets:///base_5.mp4");
 
         MediaSource mediaSource = buildMediaSource(uri);
 
@@ -415,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
             drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
             drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
             drawer.drawKf2Line(new Point(238,122));
-            drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+            //drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
 
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));

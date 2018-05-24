@@ -119,11 +119,11 @@ public class DrawingController {
         RectF oval = new RectF(p3.x - radius, p3.y - radius, p3.x + radius, p3.y + radius);
         //canvas.drawArc(oval, -90, 90, false, paint);
         paint.setColor(Color.parseColor(color));
-        canvas.drawArc(oval, (int)(90-angle), 151, false, paint);
+        canvas.drawArc(oval, (int)(90-angle), curveRadius, false, paint);
 
     }
 
-    private void drawK4Curve(int x1, int y1, int x2, int y2,String color) {
+    private void drawK4Curve(int x1, int y1, int x2, int y2,String color, Integer angle) {
         Paint paint  = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.parseColor(color));
@@ -131,17 +131,24 @@ public class DrawingController {
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
         int radius = 20;
-        int midX            = x1 + ((x2 - x1) / 2);
-        int midY            = y1 + ((y2 - y1) / 2);
-        float xDiff         = midX - x1;
-        float yDiff         = midY - y1;
-        double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
-
-        angle= Math.abs(angle);
         paint.setStrokeCap(Paint.Cap.SQUARE);
-        RectF oval = new RectF(x1 - radius, y1 - radius, x2 + radius, y2 + radius);
+        RectF oval = new RectF(x2 - radius, y2 - radius, x2 + radius, y2 + radius);
         paint.setColor(Color.parseColor(color));
-        canvas.drawArc(oval, -(int)(90-angle), 151, false, paint);
+        canvas.drawArc (oval, -90, angle, false, paint);
+    }
+
+    private void drawK4HCurve(int x1, int y1,String color, Integer angle) {
+        Paint paint  = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.parseColor(color));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        paint.setAntiAlias(true);
+        int radius = 20;
+        paint.setStrokeCap(Paint.Cap.SQUARE);
+        RectF oval = new RectF(x1 - radius, y1 - radius, x1 + radius, y1 + radius);
+        paint.setColor(Color.parseColor(color));
+        canvas.drawArc (oval, 90, angle, false, paint);
     }
 
     private void drawDashedLines(Integer x, Integer y) {
@@ -181,19 +188,28 @@ public class DrawingController {
         drawDashedLines(newP1.x,newP1.y);
     }
 
-    public void drawKf2AtoKAngle(Point p1, Point p2, Point p3) {
+    public void drawKf2AtoKAngle(Point p1, Point p2, Point p3, Integer angle) {
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
         Point newP3 = normalisePoint(p3);
         Point midPoint = getMidPoint(newP1,newP2);
         Point midPoint2 = getMidPoint(newP2,newP3);
-        drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,0,newP2,"#00ff03");
+        drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,"#00ff03");
     }
 
-    public void drawKf4AtoKAngle(Point p1, Point p2) {
+    public void drawKf4AtoKAngle(Point p1, Point p2, Integer angle) {
         Point newP1 = normalisePoint(p1);
+
         Point newP2 = normalisePoint(p2);
-        drawK4Curve(newP2.x,newP2.y,newP1.x,newP1.y,"#00ff03");
+        Point midPoint = getMidPoint(newP1,newP2);
+        // 353, 93), new Point(369, 78
+        Log.d("TAG","X="+newP1.x);
+        drawK4Curve(newP1.x,newP1.y,newP2.x,newP2.y,"#00ff03",angle);
+    }
+
+    public void drawKf4HtoHAngle(Point p1, Integer angle) {
+        Point newP1 = normalisePoint(p1);
+        drawK4HCurve(newP1.x,newP1.y,"#00ff03",angle);
     }
 
     public static double angleBetweenPoints(Point a, Point b) {
@@ -214,7 +230,8 @@ public class DrawingController {
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
-        RectF oval = new RectF(newP1.x-50, newP1.y-10, newP1.x+50, newP1.y+40);
+        paint.setStrokeWidth(2);
+        RectF oval = new RectF(newP1.x-60, newP1.y-20, newP1.x+60, newP1.y+40);
         canvas.drawOval(oval, paint);
         //canvas.drawCircle(newP1.x,newP1.y,30,paint);
     }

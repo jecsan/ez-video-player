@@ -236,9 +236,13 @@ public class CustomExoPlayerView extends FrameLayout {
     private boolean prevPaused = false;
     public Integer nextKf = 0;
 
-    final Integer kf2Time = 3620;
-    final Integer kf3Time = 3695;
-    final Integer kf4Time = 3765;
+//    final Integer kf2Time = 3620;
+//    final Integer kf3Time = 3695;
+//    final Integer kf4Time = 3765;
+
+    Integer kf2Time = 1570;
+    final Integer kf3Time = 1730;
+    final Integer kf4Time = 1850;
 
     public Long pausedPosition;
 
@@ -417,6 +421,10 @@ public class CustomExoPlayerView extends FrameLayout {
             });
         }
 
+    }
+
+    public void setKf2Time(Integer time) {
+        this.kf2Time = time;
     }
 
     /**
@@ -1186,20 +1194,27 @@ public class CustomExoPlayerView extends FrameLayout {
 
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             if (prev == kf2Time) {
-                drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
-                drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
-                drawer.drawKf2Line(new Point(334, 151));
-                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
+//                drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
+//                drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
+//                drawer.drawKf2Line(new Point(334, 151));
+//                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
+                drawer.drawKf2AtoK(new Point(231, 194), new Point(278, 204));
+                drawer.drawKf2KtoH(new Point(278, 204), new Point(316, 164));
+                drawer.drawKf2Line(new Point(316, 164));
+                drawer.drawKf2AtoKAngle(new Point(231,194), new Point(278,204),new Point(316,164),121);
+
             } else if (prev == kf3Time) {
-                drawer.drawBall(new Point(391, 235));
+                // plantled - ap
+                drawer.drawBall(new Point(416+20, 266+10));
                 //drawer.drawKf2AtoKAngle(new Point(398,235), new Point(393,187),new Point(360,157));
             } else if (prev == kf4Time) {
-                drawer.drawKf4HtoN(new Point(353, 93), new Point(369, 78));
-                drawer.drawKf4HtoH(new Point(353, 93), new Point(354, 158));
-                drawer.drawKf2Line(new Point(354, 158));
-                drawer.drawKf4AtoKAngle(new Point(369, 78), new Point(353, 38));
-
-                //drawer.drawKf2Line(new Point(374, 158));
+                // np and hp
+                drawer.drawKf4HtoN(new Point(404, 103), new Point(420, 84));
+                drawer.drawKf4HtoH(new Point(404, 103), new Point(410, 169));
+                //drawer.drawKf2Line(new Point(354, 158));
+                drawer.drawKf4AtoKAngle(new Point(354, 103), new Point(404, 103),40);
+                drawer.drawKf4HtoHAngle(new Point(404, 103+30),12);
+                drawer.drawKf2Line(new Point(404, 103));
                 //drawer.drawKf2AtoKAngle(new Point(393,235), new Point(403,187),new Point(374,158));
             } else {
                 ll.setVisibility(LinearLayout.INVISIBLE);
