@@ -13,5 +13,7 @@ data class Keyframe3(
     @Json(name = "plantleg")
     var plantleg: Plantleg? = null,
     @Json(name = "time")
-    var time: Double? = null
+    var time: Double? = null,
+    @Json(name = "ball")
+    var ball: List<Int>? = null
 )

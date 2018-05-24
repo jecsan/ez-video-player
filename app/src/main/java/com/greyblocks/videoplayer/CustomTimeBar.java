@@ -146,6 +146,13 @@ public class CustomTimeBar extends View implements TimeBar {
     private List<Bitmap> samepleBitmaps = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    Integer kf2Time = 1570;
+    Integer kf3Time = 1730;
+    Integer kf4Time = 1850;
+
+
+    Frames frameData;
+
     public static Bitmap drawableToBitmap (Drawable drawable) {
 
         if (drawable instanceof BitmapDrawable) {
@@ -693,11 +700,11 @@ public class CustomTimeBar extends View implements TimeBar {
         String durationText = Double.toString(intPos);
 
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
-        Log.d(TAG,"==============");
-        Log.d(TAG,"RIGHT="+scrubberBar.right);
-        Log.d(TAG,"LEFT="+scrubberBar.left);
-        Log.d(TAG,"PROG="+progressBar.right);
-        Log.d(TAG,"playheadX="+playheadX);
+//        Log.d(TAG,"==============");
+//        Log.d(TAG,"RIGHT="+scrubberBar.right);
+//        Log.d(TAG,"LEFT="+scrubberBar.left);
+//        Log.d(TAG,"PROG="+progressBar.right);
+//        Log.d(TAG,"playheadX="+playheadX);
 //        Log.d(TAG,"DURATION="+duration);
 //        Log.d(TAG,"==============");
 
@@ -737,9 +744,6 @@ public class CustomTimeBar extends View implements TimeBar {
 //        final Integer kf3Time = 3695;
 //        final Integer kf4Time = 3765;
 
-        final Integer kf2Time = 1570;
-        final Integer kf3Time = 1730;
-        final Integer kf4Time = 1850;
 
 
         final Integer kf2Start =  Util.constrainValue(kf2Time-28, 168, progressBar.right)+2;
@@ -961,6 +965,10 @@ public class CustomTimeBar extends View implements TimeBar {
     }
 
     public void setFrameData(Frames frameData){
+        this.frameData = frameData;
+        kf2Time = (int)(frameData.getKeyframe2().getTime()*1000)-27;
+        kf3Time = (int)(frameData.getKeyframe3().getTime()*1000)-27;
+        kf4Time = (int)(frameData.getKeyframe4().getTime()*1000)-27;
         Log.d("Joed","Set frame data from timebar "+frameData);
     }
 }

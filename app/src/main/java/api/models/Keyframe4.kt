@@ -4,6 +4,8 @@ import com.squareup.moshi.Json
 
 data class Keyframe4 (
 
+    @Json(name = "body")
+    var body: Body? = null,
     @Json(name = "kickleg")
     var kickleg: Kickleg? = null,
     @Json(name = "direction")

@@ -243,8 +243,10 @@ public class CustomExoPlayerView extends FrameLayout {
 //    final Integer kf4Time = 3765;
 
     Integer kf2Time = 1570;
-    final Integer kf3Time = 1730;
-    final Integer kf4Time = 1850;
+    Integer kf3Time = 1730;
+    Integer kf4Time = 1850;
+
+    Frames frameData;
 
     public Long pausedPosition;
 
@@ -1109,6 +1111,7 @@ public class CustomExoPlayerView extends FrameLayout {
             }
             Log.d("STATE","playWhenReady="+playWhenReady);
             Log.d("lastKfTs","playbackState="+playbackState);
+
             if (!playWhenReady) {
                 if (prevKf != 0 && !prevPaused) {
                     Integer prev = prevKf;
@@ -1194,19 +1197,20 @@ public class CustomExoPlayerView extends FrameLayout {
             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
             DrawingController drawer = new DrawingController(dis);
 
-            Point kf2Ap =new Point(231, 194);
-            Point kf2Hp =new Point(316, 164);
-            Point kf2Kp =new Point(278, 204);
-            Integer kf2u2le = 121;
+            Point kf2Ap =new Point(frameData.getKeyframe2().getKickleg().getAp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getAp().get(1).intValue());
+            Point kf2Hp =new Point(frameData.getKeyframe2().getKickleg().getHp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getHp().get(1).intValue());
+            Point kf2Kp =new Point(frameData.getKeyframe2().getKickleg().getKp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getKp().get(1).intValue());
+            Integer kf2u2le = frameData.getKeyframe2().getKickleg().getAngles().get("u2l-e").intValue();
 
-            Point kf3Ball = new Point(416+20, 266+10);
 
-            Point kf4Np = new Point(404, 103);
-            Point kf4Hp = new Point(420, 84);
-            Point kf4KickHp = new Point(410, 169);
+            Point kf3Ball = new Point(frameData.getKeyframe3().getBall().get(0)+20, frameData.getKeyframe3().getBall().get(1)+10);
 
-            Integer kf4h2v= 40;
-            Integer kf4b2v= 12;
+            Point kf4Np = new Point(frameData.getKeyframe4().getBody().getNp().get(0).intValue(), frameData.getKeyframe4().getBody().getNp().get(1).intValue());
+            Point kf4Hp = new Point(frameData.getKeyframe4().getBody().getHp().get(0).intValue(), frameData.getKeyframe4().getBody().getHp().get(1).intValue());
+            Point kf4KickHp = new Point(frameData.getKeyframe4().getKickleg().getHp().get(0).intValue(), frameData.getKeyframe4().getKickleg().getHp().get(1).intValue());
+
+            Integer kf4h2v= frameData.getKeyframe4().getBody().getAngles().get("h2v").intValue();
+            Integer kf4b2v= frameData.getKeyframe4().getBody().getAngles().get("b2v").intValue();
 
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             if (prev == kf2Time) {
@@ -1215,7 +1219,7 @@ public class CustomExoPlayerView extends FrameLayout {
 //                drawer.drawKf2Line(new Point(334, 151));
 //                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
                 drawer.drawKf2AtoK(kf2Ap, kf2Kp);
-                drawer.drawKf2KtoH(kf2Kp, kf2Ap);
+                drawer.drawKf2KtoH(kf2Kp, kf2Hp);
                 drawer.drawKf2Line(kf2Hp);
                 drawer.drawKf2AtoKAngle(kf2Ap, kf2Kp,kf2Hp,kf2u2le);
 
@@ -1243,6 +1247,10 @@ public class CustomExoPlayerView extends FrameLayout {
     }
 
     public void setFrameData(Frames frameData){
+        this.frameData  = frameData;
+        kf2Time = (int)(frameData.getKeyframe2().getTime()*1000)-27;
+        kf3Time = (int)(frameData.getKeyframe3().getTime()*1000)-27;
+        kf4Time = (int)(frameData.getKeyframe4().getTime()*1000)-27;
         controller.getTimeBar().setFrameData(frameData);
 //        controller
     }
