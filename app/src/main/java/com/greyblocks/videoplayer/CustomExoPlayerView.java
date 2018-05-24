@@ -1194,29 +1194,43 @@ public class CustomExoPlayerView extends FrameLayout {
             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
             DrawingController drawer = new DrawingController(dis);
 
+            Point kf2Ap =new Point(231, 194);
+            Point kf2Hp =new Point(316, 164);
+            Point kf2Kp =new Point(278, 204);
+            Integer kf2u2le = 121;
+
+            Point kf3Ball = new Point(416+20, 266+10);
+
+            Point kf4Np = new Point(404, 103);
+            Point kf4Hp = new Point(420, 84);
+            Point kf4KickHp = new Point(410, 169);
+
+            Integer kf4h2v= 40;
+            Integer kf4b2v= 12;
+
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             if (prev == kf2Time) {
 //                drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
 //                drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
 //                drawer.drawKf2Line(new Point(334, 151));
 //                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
-                drawer.drawKf2AtoK(new Point(231, 194), new Point(278, 204));
-                drawer.drawKf2KtoH(new Point(278, 204), new Point(316, 164));
-                drawer.drawKf2Line(new Point(316, 164));
-                drawer.drawKf2AtoKAngle(new Point(231,194), new Point(278,204),new Point(316,164),121);
+                drawer.drawKf2AtoK(kf2Ap, kf2Kp);
+                drawer.drawKf2KtoH(kf2Kp, kf2Ap);
+                drawer.drawKf2Line(kf2Hp);
+                drawer.drawKf2AtoKAngle(kf2Ap, kf2Kp,kf2Hp,kf2u2le);
 
             } else if (prev == kf3Time) {
                 // plantled - ap
-                drawer.drawBall(new Point(416+20, 266+10));
+                drawer.drawBall(kf3Ball);
                 //drawer.drawKf2AtoKAngle(new Point(398,235), new Point(393,187),new Point(360,157));
             } else if (prev == kf4Time) {
                 // np and hp
-                drawer.drawKf4HtoN(new Point(404, 103), new Point(420, 84));
-                drawer.drawKf4HtoH(new Point(404, 103), new Point(410, 169));
+                drawer.drawKf4HtoN(kf4Np, kf4Hp);
+                drawer.drawKf4HtoH(kf4Np, kf4KickHp);
                 //drawer.drawKf2Line(new Point(354, 158));
-                drawer.drawKf4AtoKAngle(new Point(354, 103), new Point(404, 103),40);
-                drawer.drawKf4HtoHAngle(new Point(404, 103+30),12);
-                drawer.drawKf2Line(new Point(404, 103));
+                drawer.drawKf4AtoKAngle(new Point(354, 103),kf4Np,kf4h2v);
+                drawer.drawKf4HtoHAngle(new Point(kf4Np.x, kf4Np.y+30),kf4b2v);
+                drawer.drawKf2Line(kf4Np);
                 //drawer.drawKf2AtoKAngle(new Point(393,235), new Point(403,187),new Point(374,158));
             } else {
                 ll.setVisibility(LinearLayout.INVISIBLE);
