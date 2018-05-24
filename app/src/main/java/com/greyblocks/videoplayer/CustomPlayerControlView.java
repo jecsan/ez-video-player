@@ -1224,4 +1224,8 @@ public class CustomPlayerControlView extends FrameLayout {
     public interface DisplayDrawingListener{
         void onDisplayDrawing(int pos);
     }
+
+    public CustomTimeBar getTimeBar() {
+        return (CustomTimeBar) timeBar;
+    }
 }

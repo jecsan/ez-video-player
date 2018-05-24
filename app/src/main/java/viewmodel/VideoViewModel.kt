@@ -3,6 +3,7 @@ package viewmodel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import api.*
+import api.models.ApiDrawing
 
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -20,12 +21,13 @@ class VideoViewModel(private val sparrowApi: SparrowApi) : ViewModel() {
 
     fun loadVideoData(){
         mutableLiveData.value = LoadingState(null)
-        sparrowApi.frames.enqueue(object : Callback<ResponseBody>{
-            override fun onFailure(call: Call<ResponseBody>?, t: Throwable) {
+        sparrowApi.frames.enqueue(object : Callback<ApiDrawing>{
+            override fun onFailure(call: Call<ApiDrawing>?, t: Throwable) {
+                t.printStackTrace()
                 mutableLiveData.value = ErrorState(t,null)
             }
 
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+            override fun onResponse(call: Call<ApiDrawing>, response: Response<ApiDrawing>) {
                 mutableLiveData.value = DefaultState(response.body())
             }
 
