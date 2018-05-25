@@ -13,7 +13,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.util.List;
+
+import api.models.Assessments;
+import api.models.Texttips;
 
 /**
  * Created by rav on 09/05/2018.
@@ -30,12 +38,17 @@ public class DrawingController {
     private Double screenRatio = 0.0;
     private Canvas canvas;
     private Bitmap bg;
+    List<Assessments> assessments;
+    List<Texttips> texttips;
 
-    public DrawingController(Display dis) {
+    String success = "#00ff03";
+    String danger = "#ff0000";
+
+    public DrawingController(Display dis, List<Assessments> assessments, List<Texttips> texttips) {
         this.deviceWidth = dis.getWidth();
         this.deviceHeight = dis.getHeight();
-//        Log.d(TAG,"WIDTH"+deviceWidth);
-//        Log.d(TAG,"WIDTH"+deviceHeight);
+        this.assessments = assessments;
+        this.texttips = texttips;
         bg = Bitmap.createBitmap(videoWidth, videoHeight, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bg);
     }
@@ -59,16 +72,8 @@ public class DrawingController {
         paint.setStrokeWidth(6);
         paint.setStrokeCap(Paint.Cap.SQUARE);
         paint.setAntiAlias(true);
-        //paint.setDither(false);
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
-//
-//        drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
-//        drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
-//        drawer.drawKf2Line(new Point(238,122));
-//        drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
-//
-
         canvas.drawLine(newP1.x,newP1.y,newP2.x,newP2.y,paint);
     }
 
@@ -114,13 +119,17 @@ public class DrawingController {
 
 
         int radius = 50;
-        Log.d("RERRR","RRR="+angle);
-        Log.d("RERRR","RRR="+angleRadians);
         RectF oval = new RectF(p3.x - radius, p3.y - radius, p3.x + radius, p3.y + radius);
         //canvas.drawArc(oval, -90, 90, false, paint);
         paint.setColor(Color.parseColor(color));
         canvas.drawArc(oval, (int)(90-angle), curveRadius, false, paint);
 
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.parseColor(color));
+        textPaint.setTextSize(22);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setAntiAlias( true );
+        canvas.drawText(Integer.toString(curveRadius)+"°\n", x1-30,midY-50,textPaint);
     }
 
     private void drawK4Curve(int x1, int y1, int x2, int y2,String color, Integer angle) {
@@ -166,11 +175,68 @@ public class DrawingController {
 
 
     public void drawKf2KtoH(Point p1, Point p2) {
-        drawLine("#00ff03", p1,new Point(p2.x,p2.y));
+        String assessment = "Good";
+        String color = "Good";
+        for (Assessments obj : assessments) {
+            if (obj.getKey() == "keyframe2/kickleg/angles/u2v-i") {
+                assessment = obj.getLabel();
+            }
+        }
+        drawLine(getColor(assessment), p1,new Point(p2.x,p2.y));
     }
 
-    public void drawKf2AtoK(Point p1, Point p2) {
-        drawLine("#00ff03", new Point(p1.x,p1.y), p2);
+    public String getColor(String assessment) {
+        return assessment == "Good" ? success : danger;
+    }
+
+    public void drawKf2AtoK(Point p1, Point p2, Integer angle) {
+        String assessment = "Good";
+        String color = "Good";
+        String tip = "";
+        for (Assessments obj : assessments) {
+            if (new String(obj.getKey()).equals("keyframe2/kickleg/angles/u2l-e")) {
+                tip = obj.getLabel();
+            }
+        }
+
+        for (Texttips obj : texttips) {
+            if (new String(obj.getKey()).equals("keyframe2b_good")) {
+                tip = obj.getValue();
+            }
+        }
+
+        color = getColor(assessment);
+        Point newP1 = normalisePoint(p1);
+        Point newP2 = normalisePoint(p2);
+        drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,color);
+        drawLine(color, new Point(p1.x,p1.y), p2);
+        drawTooltip(color,newP1,tip);
+    }
+
+    public void drawTooltip(String color, Point p1, String tip) {
+        Paint paint = new Paint();
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.GRAY);
+        //canvas.drawRoundRect(new RectF(p1.x-150, p1.y-180, p1.x, p1.y-100), 6, 6, paint);
+        paint.setColor(Color.parseColor(color));
+        paint.setAlpha(190);
+        canvas.drawRect(p1.x-220, p1.y-130, p1.x, p1.y-50, paint);
+
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(18);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setAntiAlias( true );
+        TextRect textRect = new TextRect( textPaint );
+        //canvas.drawText("SAMPLEE SAMPLEE SAMPLEE", p1.x-100,p1.y-150, textPaint);
+
+        final int h = textRect.prepare(
+                "TIP: "+tip,
+                150 ,
+                100);
+        textRect.draw( canvas, p1.x-160, p1.y-120 );
+
     }
 
     public void drawKf4HtoN(Point p1, Point p2) {
@@ -192,8 +258,6 @@ public class DrawingController {
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
         Point newP3 = normalisePoint(p3);
-        Point midPoint = getMidPoint(newP1,newP2);
-        Point midPoint2 = getMidPoint(newP2,newP3);
         drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,"#00ff03");
     }
 

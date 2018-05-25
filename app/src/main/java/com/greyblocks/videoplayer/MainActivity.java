@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.graphics.Bitmap;
@@ -92,7 +93,9 @@ import api.DefaultState;
 import api.ErrorState;
 import api.MyViewModelFactory;
 import api.VideoState;
+import api.models.Assessments;
 import api.models.Frames;
+import api.models.Texttips;
 import okio.Buffer;
 import okio.BufferedSource;
 import viewmodel.VideoViewModel;
@@ -157,9 +160,12 @@ public class MainActivity extends AppCompatActivity {
                     if(((DefaultState) videoState).component1() != null){
 
                         framesData = videoState.getData().getFrames();
+                        List<Assessments> assessments = videoState.getData().getAssessments();
+                        List<Texttips> textips = videoState.getData().getTextips();
+
                         Double hp = framesData.getKeyframe2().getKickleg().getHp().get(0);
                         kf2Hp = (int)(((hp*.8)+hp));
-                        playerView.setFrameData(framesData);
+                        playerView.setFrameData(framesData,assessments,textips);
 
 //                        Type type = Types.newParameterizedType(Map.class, Object.class, Map.class);
 //                        JsonAdapter<Map<Object,Map>> adapter = moshi.adapter(type);
@@ -344,27 +350,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
-        myBubble.setCornerRadius(20);
-        myBubble.setPointerAlignment(BubbleDrawable.RIGHT);
-        myBubble.setPadding(25, 25, 25, 25);
-
-        //LinearLayout dialogLayout = (LinearLayout) findViewById(R.id.dialog_area);
-        //dialogLayout.setBackgroundDrawable(myBubble);
-
-        LinearLayout dialogLayout = new LinearLayout(this);
-        dialogLayout.setBackgroundColor(Color.CYAN);
-        dialogLayout.setOrientation(LinearLayout.VERTICAL);
-
-        RelativeLayout.LayoutParams LLParams = new RelativeLayout.LayoutParams(new FrameLayout.LayoutParams(500,200));
-        LLParams.topMargin = 421;
-        LLParams.leftMargin = 693;
-        dialogLayout.setLayoutParams(LLParams);
-        TextView rowTextView = new TextView(this);
-        rowTextView.setText("When winding up, pull your leg back 50° + Bend at the knee to 90°.");
-        rowTextView.setTextColor(Color.WHITE);
-        rowTextView.setWidth(200);
-        dialogLayout.setBackgroundDrawable(myBubble);
-        dialogLayout.addView(rowTextView);
+//        myBubble.setCornerRadius(20);
+//        myBubble.setPointerAlignment(BubbleDrawable.RIGHT);
+//        myBubble.setPadding(25, 25, 25, 25);
+//
+//        LinearLayout dialogLayout = (LinearLayout) findViewById(R.id.draw_area);
+//        dialogLayout.setBackgroundDrawable(myBubble);
+//
+//        //LinearLayout dialogLayout = new LinearLayout(this);
+//        dialogLayout.setBackgroundColor(Color.CYAN);
+//        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+//
+//        RelativeLayout.LayoutParams LLParams = new RelativeLayout.LayoutParams(new FrameLayout.LayoutParams(500,200));
+//        LLParams.topMargin = 421;
+//        LLParams.leftMargin = 693;
+//        dialogLayout.setLayoutParams(LLParams);
+//        TextView rowTextView = new TextView(this);
+//        rowTextView.setText("When winding up, pull your leg back 50° + Bend at the knee to 90°.");
+//        rowTextView.setTextColor(Color.WHITE);
+//        rowTextView.setWidth(200);
+//        dialogLayout.setBackgroundDrawable(myBubble);
+//        dialogLayout.addView(rowTextView);
        // playerView.addView(dialogLayout);
 
         player.prepare(mediaSource, false, false);
@@ -449,21 +455,21 @@ public class MainActivity extends AppCompatActivity {
             player = null;
         }
     }
-
-    public void drawKeyframe(Long position) {
-        if (position == 2533) {
-            dis = getWindowManager().getDefaultDisplay();
-            DrawingController drawer = new DrawingController(dis);
-            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
-            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
-            drawer.drawKf2Line(new Point(238,122));
-            //drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
-
-            LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-        }
-    }
-
+//
+//    public void drawKeyframe(Long position) {
+//        if (position == 2533) {
+//            dis = getWindowManager().getDefaultDisplay();
+//            DrawingController drawer = new DrawingController(dis);
+//            drawer.drawKf2AtoK(new Point(169,141), new Point(212,157));
+//            drawer.drawKf2KtoH(new Point(212,157), new Point(238,122));
+//            drawer.drawKf2Line(new Point(238,122));
+//            //drawer.drawKf2AtoKAngle(new Point(169,141), new Point(212,157),new Point(238,122));
+//
+//            LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
+//            ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//        }
+//    }
+//
 
     public void setDrawing(MainActivity.DrawAction drawer) {
         this.drawAction = drawer;

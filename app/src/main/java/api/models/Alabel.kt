@@ -2,7 +2,7 @@ package api.models
 
 import com.squareup.moshi.Json
 
-data class Assessments (
+data class Alabel (
 
     @Json(name = "keyframe")
     var keyframe: String? = null,

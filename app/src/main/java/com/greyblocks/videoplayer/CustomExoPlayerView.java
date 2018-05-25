@@ -57,9 +57,14 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.RepeatModeUtil;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
+
+import org.w3c.dom.Text;
+
 import java.util.List;
 
+import api.models.Assessments;
 import api.models.Frames;
+import api.models.Texttips;
 
 /**
  * A high level view for {@link Player} media playbacks. It displays video, subtitles and album art
@@ -245,6 +250,9 @@ public class CustomExoPlayerView extends FrameLayout {
     Integer kf2Time = 1570;
     Integer kf3Time = 1730;
     Integer kf4Time = 1850;
+
+    List<Assessments> assessments;
+    List<Texttips> texttips;
 
     Frames frameData;
 
@@ -1195,7 +1203,7 @@ public class CustomExoPlayerView extends FrameLayout {
             final Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            DrawingController drawer = new DrawingController(dis);
+            DrawingController drawer = new DrawingController(dis, assessments,texttips);
 
             Point kf2Ap =new Point(frameData.getKeyframe2().getKickleg().getAp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getAp().get(1).intValue());
             Point kf2Hp =new Point(frameData.getKeyframe2().getKickleg().getHp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getHp().get(1).intValue());
@@ -1212,30 +1220,25 @@ public class CustomExoPlayerView extends FrameLayout {
             Integer kf4h2v= frameData.getKeyframe4().getBody().getAngles().get("h2v").intValue();
             Integer kf4b2v= frameData.getKeyframe4().getBody().getAngles().get("b2v").intValue();
 
+
+
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             if (prev == kf2Time) {
-//                drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
-//                drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
-//                drawer.drawKf2Line(new Point(334, 151));
-//                drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
-                drawer.drawKf2AtoK(kf2Ap, kf2Kp);
+                drawer.drawKf2AtoK(kf2Ap, kf2Kp,kf2u2le);
                 drawer.drawKf2KtoH(kf2Kp, kf2Hp);
                 drawer.drawKf2Line(kf2Hp);
-                drawer.drawKf2AtoKAngle(kf2Ap, kf2Kp,kf2Hp,kf2u2le);
+                //drawer.drawKf2AtoKAngle(kf2Ap, kf2Kp,kf2Hp,kf2u2le);
 
             } else if (prev == kf3Time) {
                 // plantled - ap
                 drawer.drawBall(kf3Ball);
-                //drawer.drawKf2AtoKAngle(new Point(398,235), new Point(393,187),new Point(360,157));
             } else if (prev == kf4Time) {
                 // np and hp
                 drawer.drawKf4HtoN(kf4Np, kf4Hp);
                 drawer.drawKf4HtoH(kf4Np, kf4KickHp);
-                //drawer.drawKf2Line(new Point(354, 158));
                 drawer.drawKf4AtoKAngle(new Point(354, 103),kf4Np,kf4h2v);
                 drawer.drawKf4HtoHAngle(new Point(kf4Np.x, kf4Np.y+30),kf4b2v);
                 drawer.drawKf2Line(kf4Np);
-                //drawer.drawKf2AtoKAngle(new Point(393,235), new Point(403,187),new Point(374,158));
             } else {
                 ll.setVisibility(LinearLayout.INVISIBLE);
             }
@@ -1246,11 +1249,13 @@ public class CustomExoPlayerView extends FrameLayout {
 
     }
 
-    public void setFrameData(Frames frameData){
+    public void setFrameData(Frames frameData, List<Assessments> assessments, List<Texttips> texttips){
         this.frameData  = frameData;
         kf2Time = (int)(frameData.getKeyframe2().getTime()*1000)-27;
         kf3Time = (int)(frameData.getKeyframe3().getTime()*1000)-27;
         kf4Time = (int)(frameData.getKeyframe4().getTime()*1000)-27;
+        this.assessments = assessments;
+        this.texttips = texttips;
         controller.getTimeBar().setFrameData(frameData);
 //        controller
     }
