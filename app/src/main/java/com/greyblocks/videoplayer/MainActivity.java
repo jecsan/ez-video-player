@@ -129,9 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public ArrayList<Bitmap> framesArray = new ArrayList<>();
-
+    Frames framesData;
     private VideoViewModel videoViewModel;
     Moshi moshi = new Moshi.Builder().build();
+    public Integer kf2Hp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,8 +156,10 @@ public class MainActivity extends AppCompatActivity {
                 if(videoState instanceof DefaultState){
                     if(((DefaultState) videoState).component1() != null){
 
-                        Frames frames = videoState.getData().getFrames();
-                        playerView.setFrameData(frames);
+                        framesData = videoState.getData().getFrames();
+                        Double hp = framesData.getKeyframe2().getKickleg().getHp().get(0);
+                        kf2Hp = (int)(((hp*.8)+hp));
+                        playerView.setFrameData(framesData);
 
 //                        Type type = Types.newParameterizedType(Map.class, Object.class, Map.class);
 //                        JsonAdapter<Map<Object,Map>> adapter = moshi.adapter(type);
@@ -223,17 +227,25 @@ public class MainActivity extends AppCompatActivity {
         aspectRatioFrameLayout.getLayoutParams().height = (displayMetrics.heightPixels-(displayMetrics.heightPixels/6));
         aspectRatioFrameLayout.requestLayout();
 
+        final View contentFrame = playerView.findViewById(R.id.exo_content_frame);
 
         proShotView.getLayoutParams().height = (displayMetrics.heightPixels-(displayMetrics.heightPixels/6));
 
         proShotView.setProShotAction(new ProShotView.ProShotAction() {
             @Override
             public void onExpand() {
+
+
                 ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
                 resizeWidthAnimation.setDuration(200);
-                playerView.setX(-200);
-                playerView.startAnimation(resizeWidthAnimation);
 
+                Integer deviceWidth = getResources().getDisplayMetrics().widthPixels;
+                contentFrame.setX(-kf2Hp);
+                //proShotView.setX(1300);
+                Log.d("ZZ","zzz="+proShotView.getWidth());
+                //proShotView.getLayoutParams().width = 800;
+                proShotView.setX(deviceWidth-kf2Hp);
+                //proShotView.startAnimation(resizeWidthAnimation);
             }
 
             @Override
@@ -241,7 +253,15 @@ public class MainActivity extends AppCompatActivity {
                 ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame),
                         collapsedWidth);
                 resizeWidthAnimation.setDuration(200);
-                playerView.startAnimation(resizeWidthAnimation);
+                Double hp = framesData.getKeyframe2().getKickleg().getHp().get(0);
+                final Double translationWidth = ((hp*.8)+hp)/2;
+                Integer deviceWidth = getResources().getDisplayMetrics().widthPixels;
+                View view = playerView.findViewById(R.id.exo_content_frame);
+                view.setX(0);
+                proShotView.setX(deviceWidth-239);
+
+                Log.d("ZZZ","ZZ="+proShotView.getX());
+                //proShotView.startAnimation(resizeWidthAnimation);
 
             }
         });
