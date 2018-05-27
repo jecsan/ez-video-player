@@ -1209,6 +1209,7 @@ public class CustomExoPlayerView extends FrameLayout {
             Point kf2Hp =new Point(frameData.getKeyframe2().getKickleg().getHp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getHp().get(1).intValue());
             Point kf2Kp =new Point(frameData.getKeyframe2().getKickleg().getKp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getKp().get(1).intValue());
             Integer kf2u2le = frameData.getKeyframe2().getKickleg().getAngles().get("u2l-e").intValue();
+            Integer kf2u2v = frameData.getKeyframe2().getKickleg().getAngles().get("u2v-i").intValue();
 
 
             Point kf3Ball = new Point(frameData.getKeyframe3().getBall().get(0)+20, frameData.getKeyframe3().getBall().get(1)+10);
@@ -1225,7 +1226,7 @@ public class CustomExoPlayerView extends FrameLayout {
             LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
             if (prev == kf2Time) {
                 drawer.drawKf2AtoK(kf2Ap, kf2Kp,kf2u2le);
-                drawer.drawKf2KtoH(kf2Kp, kf2Hp);
+                drawer.drawKf2KtoH(kf2Kp, kf2Hp,kf2u2v);
                 drawer.drawKf2Line(kf2Hp);
                 //drawer.drawKf2AtoKAngle(kf2Ap, kf2Kp,kf2Hp,kf2u2le);
 
@@ -1234,10 +1235,10 @@ public class CustomExoPlayerView extends FrameLayout {
                 drawer.drawBall(kf3Ball);
             } else if (prev == kf4Time) {
                 // np and hp
-                drawer.drawKf4HtoN(kf4Np, kf4Hp);
-                drawer.drawKf4HtoH(kf4Np, kf4KickHp);
-                drawer.drawKf4AtoKAngle(new Point(354, 103),kf4Np,kf4h2v);
-                drawer.drawKf4HtoHAngle(new Point(kf4Np.x, kf4Np.y+30),kf4b2v);
+                drawer.drawKf4HtoN(kf4Np, kf4Hp, kf4h2v);
+                drawer.drawKf4HtoH(kf4Np, kf4KickHp,kf4b2v);
+                //drawer.drawKf4AtoKAngle(new Point(354, 103),kf4Np,kf4h2v);
+                //drawer.drawKf4HtoHAngle(new Point(kf4Np.x, kf4Np.y+30),kf4b2v);
                 drawer.drawKf2Line(kf4Np);
             } else {
                 ll.setVisibility(LinearLayout.INVISIBLE);

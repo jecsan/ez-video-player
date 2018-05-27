@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
@@ -91,7 +92,6 @@ public class DrawingController {
 
 
     public void drawCurvedArrow(int x1, int y1, int x2, int y2, int curveRadius, Point p3, String color) {
-
         Paint paint  = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.parseColor(color));
@@ -99,40 +99,46 @@ public class DrawingController {
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
         paint.setStrokeCap(Paint.Cap.SQUARE);
-        final Path path = new Path();
         int midX            = x1 + ((x2 - x1) / 2);
         int midY            = y1 + ((y2 - y1) / 2);
         float xDiff         = midX - x1;
         float yDiff         = midY - y1;
         double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
-        double angleRadians = Math.toRadians(angle);
-        float pointX        = (float) (midX + curveRadius * Math.cos(angleRadians));
-        float pointY        = (float) (midY + curveRadius * Math.sin(angleRadians));
-        Point m3 = getMidPoint(new Point(x1,y1),new Point(x2,y2));
-
-
-
-        p3.x = p3.x;
-        p3.y = p3.y;
         angle= Math.abs(angle);
-        // Draw the circle at (x,y) with radius 250
-
-
         int radius = 50;
         RectF oval = new RectF(p3.x - radius, p3.y - radius, p3.x + radius, p3.y + radius);
-        //canvas.drawArc(oval, -90, 90, false, paint);
         paint.setColor(Color.parseColor(color));
         canvas.drawArc(oval, (int)(90-angle), curveRadius, false, paint);
-
         Paint textPaint= new Paint();
         textPaint.setColor(Color.parseColor(color));
         textPaint.setTextSize(22);
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setAntiAlias( true );
-        canvas.drawText(Integer.toString(curveRadius)+"°\n", x1-30,midY-50,textPaint);
+        canvas.drawText(Integer.toString(curveRadius)+"°\n", x1-30,midY-50,textPaint(color));
     }
 
-    private void drawK4Curve(int x1, int y1, int x2, int y2,String color, Integer angle) {
+    public void drawReversedCurvedArrow(int x1, int y1, int x2, int y2, int curveRadius, Point p3, String color) {
+        Paint paint  = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.parseColor(color));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        paint.setAntiAlias(true);
+        paint.setStrokeCap(Paint.Cap.SQUARE);
+        int midX            = x1 + ((x2 - x1) / 2);
+        int midY            = y1 + ((y2 - y1) / 2);
+        float xDiff         = midX - x1;
+        float yDiff         = midY - y1;
+        double angle        = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
+        angle= Math.abs(angle);
+        int radius = 50;
+        RectF oval = new RectF(p3.x - radius, p3.y - radius, p3.x + radius, p3.y + radius);
+        paint.setColor(Color.parseColor(color));
+        canvas.drawArc(oval, 90, curveRadius, false, paint);
+        canvas.drawText(Integer.toString(curveRadius)+"°\n", p3.x-30,p3.y+90,textPaint(color));
+    }
+
+    private void drawK4Curve( int x2, int y2,String color, Integer angle) {
         Paint paint  = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.parseColor(color));
@@ -144,6 +150,7 @@ public class DrawingController {
         RectF oval = new RectF(x2 - radius, y2 - radius, x2 + radius, y2 + radius);
         paint.setColor(Color.parseColor(color));
         canvas.drawArc (oval, -90, angle, false, paint);
+        canvas.drawText(Integer.toString(angle)+"°\n", x2-10,y2-30,textPaint(color));
     }
 
     private void drawK4HCurve(int x1, int y1,String color, Integer angle) {
@@ -158,6 +165,16 @@ public class DrawingController {
         RectF oval = new RectF(x1 - radius, y1 - radius, x1 + radius, y1 + radius);
         paint.setColor(Color.parseColor(color));
         canvas.drawArc (oval, 90, angle, false, paint);
+        canvas.drawText(Integer.toString(angle)+"°\n", x1-40,y1+20,textPaint(color));
+    }
+
+    public Paint textPaint(String color) {
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.parseColor(color));
+        textPaint.setTextSize(22);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setAntiAlias( true );
+        return textPaint;
     }
 
     private void drawDashedLines(Integer x, Integer y) {
@@ -174,78 +191,184 @@ public class DrawingController {
 
 
 
-    public void drawKf2KtoH(Point p1, Point p2) {
+    public void drawKf2KtoH(Point p1, Point p2, Integer angle) {
+
         String assessment = "Good";
         String color = "Good";
+        String tip = "";
+        String textlabel = "";
+        Rect rect;
+        color = getColor(assessment);
+        Point newP1 = normalisePoint(p1);
+        Point newP2 = normalisePoint(p2);
+
         for (Assessments obj : assessments) {
-            if (obj.getKey() == "keyframe2/kickleg/angles/u2v-i") {
+            if (new String(obj.getKey()).equals("keyframe2/kickleg/angles/u2v-i")) {
                 assessment = obj.getLabel();
             }
         }
-        drawLine(getColor(assessment), p1,new Point(p2.x,p2.y));
+
+
+        if (new String(assessment).equals("Good")) {
+            textlabel = "keyframe2a_good";
+            rect =  new Rect(newP1.x-220, newP1.y+135, newP1.x, newP1.y+30);
+        } else {
+            textlabel = "keyframe2a";
+            rect =  new Rect(newP1.x-220, newP1.y+110, newP1.x, newP1.y+30);
+        }
+
+        for (Texttips obj : texttips) {
+            if (new String(obj.getKey()).equals(textlabel)) {
+                tip = obj.getValue();
+            }
+        }
+        color = getColor(assessment);
+        tip = tip.replaceAll("\\-", "");
+        drawReversedCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,color);
+        drawLine(color, new Point(p1.x,p1.y), p2);
+        Point tPoint = new Point(newP1.x-160, newP1.y+40 );
+        drawTooltip(color,tPoint,tip,rect);
     }
 
     public String getColor(String assessment) {
-        return assessment == "Good" ? success : danger;
+        if (new String(assessment).equals("Good")) {
+            return success;
+        } else {
+            return danger;
+        }
     }
 
     public void drawKf2AtoK(Point p1, Point p2, Integer angle) {
         String assessment = "Good";
         String color = "Good";
         String tip = "";
+        String textlabel = "keyframe2b_good";
+
         for (Assessments obj : assessments) {
             if (new String(obj.getKey()).equals("keyframe2/kickleg/angles/u2l-e")) {
-                tip = obj.getLabel();
+                assessment = obj.getLabel();
             }
         }
 
+        if (new String(assessment).equals("Good")) {
+            textlabel = "keyframe2b_good";
+        } else {
+            textlabel = "keyframe2b";
+        }
+
         for (Texttips obj : texttips) {
-            if (new String(obj.getKey()).equals("keyframe2b_good")) {
+            if (new String(obj.getKey()).equals(textlabel)) {
                 tip = obj.getValue();
             }
         }
 
+        tip = tip.replaceAll("\\-", "");
         color = getColor(assessment);
         Point newP1 = normalisePoint(p1);
         Point newP2 = normalisePoint(p2);
         drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,color);
         drawLine(color, new Point(p1.x,p1.y), p2);
-        drawTooltip(color,newP1,tip);
+        Rect rect =  new Rect(newP1.x-220, newP1.y-130, newP1.x, newP1.y-50);
+        Point tPoint = new Point(newP1.x-160, newP1.y-120 );
+        drawTooltip(color,tPoint,tip,rect);
     }
 
-    public void drawTooltip(String color, Point p1, String tip) {
+    public void drawTooltip(String color, Point p1, String tip, Rect rect) {
         Paint paint = new Paint();
-
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.GRAY);
-        //canvas.drawRoundRect(new RectF(p1.x-150, p1.y-180, p1.x, p1.y-100), 6, 6, paint);
         paint.setColor(Color.parseColor(color));
         paint.setAlpha(190);
-        canvas.drawRect(p1.x-220, p1.y-130, p1.x, p1.y-50, paint);
-
+        canvas.drawRect(rect, paint);
         Paint textPaint= new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(18);
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setAntiAlias( true );
         TextRect textRect = new TextRect( textPaint );
-        //canvas.drawText("SAMPLEE SAMPLEE SAMPLEE", p1.x-100,p1.y-150, textPaint);
-
         final int h = textRect.prepare(
                 "TIP: "+tip,
                 150 ,
                 100);
-        textRect.draw( canvas, p1.x-160, p1.y-120 );
+        textRect.draw( canvas, p1.x,p1.y);
 
     }
 
-    public void drawKf4HtoN(Point p1, Point p2) {
-        drawLine("#00ff03", p1,new Point(p2.x,p2.y));
+    public void drawKf4HtoN(Point p1, Point p2, Integer angle) {
+        String assessment = "Good";
+        String color = "Good";
+        String tip = "";
+        String textlabel = "keyframe2b_good";
+
+        for (Assessments obj : assessments) {
+            if (new String(obj.getKey()).equals("keyframe4/body/angles/h2v")) {
+                assessment = obj.getLabel();
+            }
+        }
+
+        if (new String(assessment).equals("Good")) {
+            textlabel = "keyframe4a_good";
+        } else {
+            textlabel = "keyframe4a";
+        }
+
+        for (Texttips obj : texttips) {
+            if (new String(obj.getKey()).equals(textlabel)) {
+                tip = obj.getValue();
+            }
+        }
+
+        tip = tip.replaceAll("\\-", "");
+        color = getColor(assessment);
+        Point newP1 = normalisePoint(p1);
+        Point newP2 = normalisePoint(p2);
+        drawLine(color, p1,new Point(p2.x,p2.y));
+        Rect rect =  new Rect(newP1.x+250, newP1.y+40, newP1.x+40, newP1.y-40);
+        Point tPoint = new Point(newP1.x+100, newP1.y-30 );
+        drawTooltip(color,tPoint,tip,rect);
+        drawK4Curve(newP1.x,newP1.y,color,angle);
     }
 
 
-    public void drawKf4HtoH(Point p1, Point p2) {
-        drawLine("#00ff03", p1,new Point(p2.x,p2.y));
+    public void drawKf4HtoH(Point p1, Point p2, Integer angle) {
+
+        String assessment = "Good";
+        String color = "Good";
+        String tip = "";
+        String textlabel = "keyframe2b_good";
+
+        for (Assessments obj : assessments) {
+            if (new String(obj.getKey()).equals("keyframe4/body/angles/b2v")) {
+                assessment = obj.getLabel();
+            }
+        }
+
+        if (new String(assessment).equals("Good")) {
+            textlabel = "keyframe4b_good";
+        } else {
+            textlabel = "keyframe4b";
+        }
+
+        for (Texttips obj : texttips) {
+            if (new String(obj.getKey()).equals(textlabel)) {
+                tip = obj.getValue();
+            }
+        }
+
+        tip = tip.replaceAll("\\-", "");
+        color = getColor(assessment);
+        Point newP1 = normalisePoint(p2);
+        Point anglePoint = new Point(p1.x,p1.y+20);
+        Point newP2 = normalisePoint(anglePoint);
+        drawLine(color, p1,new Point(p2.x,p2.y));
+        Rect rect =  new Rect(newP1.x-240, newP1.y+80, newP1.x-40, newP1.y);
+        Point tPoint = new Point(newP1.x-190, newP1.y+10 );
+        drawTooltip(color,tPoint,tip,rect);
+        drawK4HCurve(newP2.x,newP2.y,color,angle);
+        drawTooltip(color,tPoint,tip,rect);
+        //drawKf4HtoHAngle(newP2.x,newP2.y,newP1.x,newP1.y,color,angle);
+
+        //drawLine("#00ff03", p1,new Point(p2.x,p2.y));
     }
 
 
@@ -261,15 +384,6 @@ public class DrawingController {
         drawCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,"#00ff03");
     }
 
-    public void drawKf4AtoKAngle(Point p1, Point p2, Integer angle) {
-        Point newP1 = normalisePoint(p1);
-
-        Point newP2 = normalisePoint(p2);
-        Point midPoint = getMidPoint(newP1,newP2);
-        // 353, 93), new Point(369, 78
-        Log.d("TAG","X="+newP1.x);
-        drawK4Curve(newP1.x,newP1.y,newP2.x,newP2.y,"#00ff03",angle);
-    }
 
     public void drawKf4HtoHAngle(Point p1, Integer angle) {
         Point newP1 = normalisePoint(p1);
@@ -290,6 +404,32 @@ public class DrawingController {
     }
 
     public void drawBall(Point ap) {
+
+        String assessment = "Good";
+        String color = "";
+        String tip = "";
+        String textlabel = "keyframe3_good";
+
+        for (Assessments obj : assessments) {
+            if (new String(obj.getKey()).equals("keyframe3/ball")) {
+                assessment = obj.getLabel();
+            }
+        }
+
+        if (new String(assessment).equals("Good")) {
+            textlabel = "keyframe3_good";
+        } else {
+            textlabel = "keyframe3";
+        }
+
+        for (Texttips obj : texttips) {
+            if (new String(obj.getKey()).equals(textlabel)) {
+                tip = obj.getValue();
+            }
+        }
+
+        tip = tip.replaceAll("\\-", "");
+
         Point newP1 = normalisePoint(ap);
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
@@ -297,6 +437,11 @@ public class DrawingController {
         paint.setStrokeWidth(2);
         RectF oval = new RectF(newP1.x-60, newP1.y-20, newP1.x+60, newP1.y+40);
         canvas.drawOval(oval, paint);
+
+        Rect rect =  new Rect(newP1.x-260, newP1.y-130, newP1.x-40, newP1.y-25);
+        Point tPoint = new Point(newP1.x-200, newP1.y-120 );
+        drawTooltip(getColor(assessment),tPoint,tip,rect);
+
         //canvas.drawCircle(newP1.x,newP1.y,30,paint);
     }
 
