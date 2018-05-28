@@ -1,6 +1,8 @@
 package com.greyblocks.videoplayer;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -19,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import api.models.Assessments;
@@ -39,17 +43,19 @@ public class DrawingController {
     private Double screenRatio = 0.0;
     private Canvas canvas;
     private Bitmap bg;
+    private Context context;
     List<Assessments> assessments;
     List<Texttips> texttips;
 
     String success = "#00ff03";
     String danger = "#ff0000";
 
-    public DrawingController(Display dis, List<Assessments> assessments, List<Texttips> texttips) {
+    public DrawingController(Display dis, List<Assessments> assessments, List<Texttips> texttips, Context context) {
         this.deviceWidth = dis.getWidth();
         this.deviceHeight = dis.getHeight();
         this.assessments = assessments;
         this.texttips = texttips;
+        this.context = context;
         bg = Bitmap.createBitmap(videoWidth, videoHeight, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bg);
     }
@@ -227,7 +233,7 @@ public class DrawingController {
         drawReversedCurvedArrow(newP2.x,newP2.y,newP1.x,newP1.y,angle,newP2,color);
         drawLine(color, new Point(p1.x,p1.y), p2);
         Point tPoint = new Point(newP1.x-160, newP1.y+40 );
-        drawTooltip(color,tPoint,tip,rect);
+        drawTooltip(color,tPoint,tip,rect,150);
     }
 
     public String getColor(String assessment) {
@@ -270,10 +276,10 @@ public class DrawingController {
         drawLine(color, new Point(p1.x,p1.y), p2);
         Rect rect =  new Rect(newP1.x-220, newP1.y-130, newP1.x, newP1.y-50);
         Point tPoint = new Point(newP1.x-160, newP1.y-120 );
-        drawTooltip(color,tPoint,tip,rect);
+        drawTooltip(color,tPoint,tip,rect,150);
     }
 
-    public void drawTooltip(String color, Point p1, String tip, Rect rect) {
+    public void drawTooltip(String color, Point p1, String tip, Rect rect, Integer maxWidth) {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.GRAY);
@@ -288,10 +294,10 @@ public class DrawingController {
         TextRect textRect = new TextRect( textPaint );
         final int h = textRect.prepare(
                 "TIP: "+tip,
-                150 ,
+                maxWidth ,
                 100);
         textRect.draw( canvas, p1.x,p1.y);
-
+        drawImage(color,p1);
     }
 
     public void drawKf4HtoN(Point p1, Point p2, Integer angle) {
@@ -325,7 +331,7 @@ public class DrawingController {
         drawLine(color, p1,new Point(p2.x,p2.y));
         Rect rect =  new Rect(newP1.x+250, newP1.y+40, newP1.x+40, newP1.y-40);
         Point tPoint = new Point(newP1.x+100, newP1.y-30 );
-        drawTooltip(color,tPoint,tip,rect);
+        drawTooltip(color,tPoint,tip,rect,150);
         drawK4Curve(newP1.x,newP1.y,color,angle);
     }
 
@@ -361,11 +367,11 @@ public class DrawingController {
         Point anglePoint = new Point(p1.x,p1.y+20);
         Point newP2 = normalisePoint(anglePoint);
         drawLine(color, p1,new Point(p2.x,p2.y));
-        Rect rect =  new Rect(newP1.x-240, newP1.y+80, newP1.x-40, newP1.y);
+        Rect rect =  new Rect(newP1.x-255, newP1.y+80, newP1.x-40, newP1.y);
         Point tPoint = new Point(newP1.x-190, newP1.y+10 );
-        drawTooltip(color,tPoint,tip,rect);
+        drawTooltip(color,tPoint,tip,rect,150);
         drawK4HCurve(newP2.x,newP2.y,color,angle);
-        drawTooltip(color,tPoint,tip,rect);
+        //drawTooltip(color,tPoint,tip,rect,150);
         //drawKf4HtoHAngle(newP2.x,newP2.y,newP1.x,newP1.y,color,angle);
 
         //drawLine("#00ff03", p1,new Point(p2.x,p2.y));
@@ -438,11 +444,40 @@ public class DrawingController {
         RectF oval = new RectF(newP1.x-60, newP1.y-20, newP1.x+60, newP1.y+40);
         canvas.drawOval(oval, paint);
 
-        Rect rect =  new Rect(newP1.x-260, newP1.y-130, newP1.x-40, newP1.y-25);
+        Rect rect =  new Rect(newP1.x-260, newP1.y-130, newP1.x-20, newP1.y-50);
         Point tPoint = new Point(newP1.x-200, newP1.y-120 );
-        drawTooltip(getColor(assessment),tPoint,tip,rect);
+        drawTooltip(getColor(assessment),tPoint,tip,rect,180);
 
         //canvas.drawCircle(newP1.x,newP1.y,30,paint);
+    }
+
+    public void drawImage(String assessment, Point p) {
+        String img = "tip.png";
+        Paint paint=new Paint();
+        if (new String(assessment).equals(danger)) {
+            img = "poor.png";
+        }
+        try {
+            InputStream istr = context.getAssets().open(img);
+            Bitmap bitmap = BitmapFactory.decodeStream(istr);
+            Bitmap newBtmp = bitmap.createScaledBitmap(bitmap, 40,40, false);
+            canvas.drawBitmap(newBtmp,p.x-50,p.y+10,paint);
+        } catch (IOException e) {
+            // handle exception
+        }
+    }
+
+    public void drawProshot() {
+        String img = "ProShotKF2@2x.png";
+        Paint paint=new Paint();
+        try {
+            InputStream istr = context.getAssets().open(img);
+            Bitmap bitmap = BitmapFactory.decodeStream(istr);
+            Bitmap newBtmp = bitmap.createScaledBitmap(bitmap, 600,638, false);
+            canvas.drawBitmap(newBtmp,1200,0,paint);
+        } catch (IOException e) {
+            // handle exception
+        }
     }
 
 }

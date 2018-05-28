@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 new DefaultRenderersFactory(this),
                 new DefaultTrackSelector(), new DefaultLoadControl());
 //        AspectRatioFrameLayou
-//        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         playerView.setPlayer(player);
         player.setSeekParameters(SeekParameters.EXACT);
         proShotView = playerView.findViewById(R.id.pro_shot_view);
@@ -246,11 +247,16 @@ public class MainActivity extends AppCompatActivity {
                 resizeWidthAnimation.setDuration(200);
 
                 Integer deviceWidth = getResources().getDisplayMetrics().widthPixels;
-                contentFrame.setX(-kf2Hp);
+                //contentFrame.setX(-kf2Hp);
                 //proShotView.setX(1300);
                 Log.d("ZZ","zzz="+proShotView.getWidth());
-                //proShotView.getLayoutParams().width = 800;
+                proShotView.getLayoutParams().width = 800;
                 proShotView.setX(deviceWidth-kf2Hp);
+
+//                ViewGroup.LayoutParams params= proShotView.getLayoutParams();
+//                params.mar= 500;
+//                proShotView.setLayoutParams(params);
+
                 //proShotView.startAnimation(resizeWidthAnimation);
             }
 
@@ -265,6 +271,11 @@ public class MainActivity extends AppCompatActivity {
                 View view = playerView.findViewById(R.id.exo_content_frame);
                 view.setX(0);
                 proShotView.setX(deviceWidth-239);
+
+//                ViewGroup.LayoutParams params= proShotView.getLayoutParams();
+//                params.width= 500;
+//                proShotView.setLayoutParams(params);
+
 
                 Log.d("ZZZ","ZZ="+proShotView.getX());
                 //proShotView.startAnimation(resizeWidthAnimation);
@@ -292,87 +303,8 @@ public class MainActivity extends AppCompatActivity {
 
         //player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
 
-
         Uri uri = Uri.parse("assets:///base_5.mp4");
-
         MediaSource mediaSource = buildMediaSource(uri);
-
-//        dis = getWindowManager().getDefaultDisplay();
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//
-//        DrawingController drawer = new DrawingController(dis);
-//        drawer.drawKf2AtoK(new Point(385,234), new Point(371,188));
-//        drawer.drawKf2KtoH(new Point(371,188), new Point(334,151));
-//        drawer.drawKf2Line(new Point(334,151));
-//        drawer.drawKf2AtoKAngle(new Point(385,234), new Point(371,188),new Point(334,151));
-//
-//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-//        ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
-
-//        dis = getWindowManager().getDefaultDisplay();
-//        DrawingController kf2Drawer = new DrawingController(dis);
-//        kf2Drawer.drawKf2AtoK(new Point(385, 234), new Point(371, 188));
-//        kf2Drawer.drawKf2KtoH(new Point(371, 188), new Point(334, 151));
-//        kf2Drawer.drawKf2Line(new Point(334, 151));
-//
-//        kf2Drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
-//        kf2Drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
-//        kf2Drawer.drawKf2Line(new Point(355, 158));
-//
-//        kf2Drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
-//        kf2Drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
-//        kf2Drawer.drawKf2Line(new Point(355, 158));
-//
-//        LinearLayout ll = (LinearLayout) findViewById(R.id.draw_area);
-//        ll.setBackgroundDrawable(new BitmapDrawable(kf2Drawer.getBitmap()));
-        //ll.setVisibility(LinearLayout.INVISIBLE);
-
-        //kf2Drawer.drawKf2AtoKAngle(new Point(385, 234), new Point(371, 188), new Point(334, 151));
-
-//        DrawingController kf3Drawer = new DrawingController(dis);
-//        kf3Drawer.drawKf2AtoK(new Point(398, 235), new Point(393, 187));
-//        kf3Drawer.drawKf2KtoH(new Point(393, 187), new Point(360, 157));
-//        kf3Drawer.drawKf2Line(new Point(355, 158));
-//        kf3Drawer.drawKf2AtoKAngle(new Point(261, 170), new Point(300, 193), new Point(355, 151));
-//        LinearLayout kf3 = (LinearLayout) findViewById(R.id.draw_area);
-//        kf3.setBackgroundDrawable(new BitmapDrawable(kf3Drawer.getBitmap()));
-//
-//        //kf3.setVisibility(LinearLayout.INVISIBLE);
-//
-//        DrawingController kf4Drawer = new DrawingController(dis);
-//        kf4Drawer.drawKf2AtoK(new Point(393, 235), new Point(403, 187));
-//        kf4Drawer.drawKf2KtoH(new Point(403, 187), new Point(374, 158));
-//        kf4Drawer.drawKf2Line(new Point(355, 158));
-//        //kf3Drawer.drawKf2AtoKAngle(new Point(261, 170), new Point(300, 193), new Point(355, 151));
-//        LinearLayout kf4 = (LinearLayout) findViewById(R.id.draw_area);
-//        kf4.setBackgroundDrawable(new BitmapDrawable(kf4Drawer.getBitmap()));
-
-
-        BubbleDrawable myBubble = new BubbleDrawable(BubbleDrawable.CENTER);
-//        myBubble.setCornerRadius(20);
-//        myBubble.setPointerAlignment(BubbleDrawable.RIGHT);
-//        myBubble.setPadding(25, 25, 25, 25);
-//
-//        LinearLayout dialogLayout = (LinearLayout) findViewById(R.id.draw_area);
-//        dialogLayout.setBackgroundDrawable(myBubble);
-//
-//        //LinearLayout dialogLayout = new LinearLayout(this);
-//        dialogLayout.setBackgroundColor(Color.CYAN);
-//        dialogLayout.setOrientation(LinearLayout.VERTICAL);
-//
-//        RelativeLayout.LayoutParams LLParams = new RelativeLayout.LayoutParams(new FrameLayout.LayoutParams(500,200));
-//        LLParams.topMargin = 421;
-//        LLParams.leftMargin = 693;
-//        dialogLayout.setLayoutParams(LLParams);
-//        TextView rowTextView = new TextView(this);
-//        rowTextView.setText("When winding up, pull your leg back 50° + Bend at the knee to 90°.");
-//        rowTextView.setTextColor(Color.WHITE);
-//        rowTextView.setWidth(200);
-//        dialogLayout.setBackgroundDrawable(myBubble);
-//        dialogLayout.addView(rowTextView);
-       // playerView.addView(dialogLayout);
-
         player.prepare(mediaSource, false, false);
         //player.setPlayWhenReady(playWhenReady);
         //player.seekTo(0, 3610);

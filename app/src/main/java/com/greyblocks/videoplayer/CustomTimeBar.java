@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import api.models.Assessments;
 import api.models.Frames;
 
 public class CustomTimeBar extends View implements TimeBar {
@@ -146,10 +147,26 @@ public class CustomTimeBar extends View implements TimeBar {
     private List<Bitmap> samepleBitmaps = new ArrayList<>();
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    Integer kf2Time = 1570;
-    Integer kf3Time = 1730;
-    Integer kf4Time = 1850;
+    Integer kf2Time = 1 ;
+    Integer kf3Time = 1;
+    Integer kf4Time = 1;
 
+    Integer kf2Pos= 1;
+    Integer kf3Pos= 1;
+    Integer kf4Pos= 1;
+
+    Integer kf2Start= 1;
+    Integer kf3Start= 1;
+    Integer kf4Start= 1;
+
+    String success = "#00ff03";
+    String danger = "#ff0000";
+
+    String kf2Color = success;
+    String kf3Color = success;
+    String kf4Color = success;
+
+    String color = success;
 
     Frames frameData;
 
@@ -733,27 +750,17 @@ public class CustomTimeBar extends View implements TimeBar {
     public void drawMarker(Canvas canvas, Integer playheadX,Integer playheadY) {
         Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
         Float perPx = (float)dis.getWidth()/(float)duration;
-        //Log.d("PERPX","perPx="+perPx);
-        // .46302748*3620
-        //DrawingController drawer = new DrawingController(dis);
-        //drawer.drawKf2AtoK(new Point(1667, 300), new Point(1800, 300));
-//        final Integer kf3Time = 3710;
-//        final Integer kf4Time = 3790;
+        kf2Start =  (int)Util.constrainValue(kf2Time-28, 168, progressBar.right)+2;
+        kf3Start =  (int)(perPx*kf3Time)+28;
+        kf4Start =  (int)(perPx*kf4Time)+28;
 
-//        final Integer kf2Time = 3620;
-//        final Integer kf3Time = 3695;
-//        final Integer kf4Time = 3765;
-
-
-
-        final Integer kf2Start =  Util.constrainValue(kf2Time-28, 168, progressBar.right)+2;
-        final Integer kf3Start =  (int)(perPx*kf3Time)+28;
-        final Integer kf4Start =  (int)(perPx*kf4Time)+28;
-
-//        Log.d("kf2Start","perPx="+perPx);
-//        Log.d("kf2Start","kf2Start="+kf2Start);
-//        Log.d("kf2Start","setStrokeWidth="+playheadX);
-//        Log.d("kf2Start","scrubberPadding="+scrubberPadding);
+        if (position == kf2Time) {
+            kf2Start = playheadX;
+        } else if (position == kf3Time) {
+            kf3Start = playheadX;
+        } else if (position == kf4Time) {
+            kf4Start = playheadX;
+        }
 
 
         Integer kf3Bubble = kf2Start+95;
@@ -767,6 +774,10 @@ public class CustomTimeBar extends View implements TimeBar {
             kf4Bubble = kf4Start;
         }
 
+        Log.d("POS","POSITION ="+position);
+        Log.d("POS","kf2Pos ="+kf2Start);
+
+
         //scrubber line
         scrubberPaint.setStrokeWidth(19);
         canvas.drawLine(playheadX, playheadY+20, playheadX, playheadY+180, scrubberPaint);
@@ -774,20 +785,17 @@ public class CustomTimeBar extends View implements TimeBar {
 
         Paint circlePaint = new Paint();
         circlePaint.setAntiAlias(true);
-        circlePaint.setColor(Color.GRAY  );
+        circlePaint.setColor(Color.GRAY);
         circlePaint.setStrokeWidth(3);
         drawKfBubble(kf2Start,circlePaint,canvas,playheadY,kf2Time);
         drawKfBubble(kf3Bubble,circlePaint,canvas,playheadY,kf3Time);
         drawKfBubble(kf4Bubble,circlePaint,canvas,playheadY,kf4Time);
 
         //bubble text
-        Paint textPaint= new Paint();
-        textPaint.setColor(Color.RED);
-        textPaint.setTextSize(50);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        drawKfText(kf2Start,textPaint,canvas,playheadY,kf2Time,"1");
-        drawKfText(kf3Bubble,textPaint,canvas,playheadY,kf3Time,"2");
-        drawKfText(kf4Bubble,textPaint,canvas,playheadY,kf4Time,"3");
+
+        drawKfText(kf2Start,getTextPaint(kf2Time),canvas,playheadY,kf2Time,"1");
+        drawKfText(kf3Bubble,getTextPaint(kf2Time),canvas,playheadY,kf3Time,"2");
+        drawKfText(kf4Bubble,getTextPaint(kf2Time),canvas,playheadY,kf4Time,"3");
 
         // connecting lines
         Paint linePaint= new Paint();
@@ -814,6 +822,24 @@ public class CustomTimeBar extends View implements TimeBar {
         drawKfdot(kf4Start,circleMarker,canvas,playheadY,kf4Time);
     }
 
+    public Paint getTextPaint(Integer time) {
+        Paint textPaint= new Paint();
+        textPaint.setColor(Color.parseColor(getColor(time)));
+        textPaint.setTextSize(50);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        return textPaint;
+    }
+
+    public String getColor(Integer time) {
+        if (time == kf2Time) {
+            return kf2Color;
+        } else if (time == kf3Time) {
+            return kf3Color;
+        } else  {
+            return kf4Color;
+        }
+    }
+
     public void drawConnectingLines(Integer kf, Paint paint, Canvas canvas, Integer playheadY) {
         if (kf == position) {
             paint.setColor(Color.GREEN);
@@ -828,7 +854,7 @@ public class CustomTimeBar extends View implements TimeBar {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle(kf,playheadY,45,paint);
         if (kfTime == position) {
-            paint.setColor(Color.RED);
+            paint.setColor(Color.parseColor(getColor(kfTime)));
             paint.setStrokeWidth(3);
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawCircle(kf,playheadY,45,paint);
@@ -837,19 +863,15 @@ public class CustomTimeBar extends View implements TimeBar {
 
     public void drawKfText(Integer kf, Paint paint, Canvas canvas, Integer playheadY,Integer kfTime, String text) {
         if (kfTime == position) {
-            paint.setColor(Color.RED);
+            paint.setColor(Color.parseColor(getColor(kfTime)));
         } else {
-            paint.setColor(Color.RED);
+            paint.setColor(Color.parseColor(getColor(kfTime)));
         }
         canvas.drawText(text, kf, playheadY+15 ,paint);
     }
 
     public void drawKfdot(Integer kf, Paint paint, Canvas canvas, Integer playheadY, Integer kfTime) {
-        if (kfTime == position) {
-            paint.setColor(Color.GREEN);
-        } else {
-            paint.setColor(Color.RED);
-        }
+        paint.setColor(Color.parseColor(getColor(kfTime)));
         canvas.drawCircle(kf,playheadY+100,10,paint);
     }
 
@@ -964,11 +986,35 @@ public class CustomTimeBar extends View implements TimeBar {
         void onDisplayDrawing(int pos);
     }
 
-    public void setFrameData(Frames frameData){
+    public void setFrameData(Frames frameData,List<Assessments> assessments){
         this.frameData = frameData;
-        kf2Time = (int)(frameData.getKeyframe2().getTime()*1000)-27;
-        kf3Time = (int)(frameData.getKeyframe3().getTime()*1000)-27;
-        kf4Time = (int)(frameData.getKeyframe4().getTime()*1000)-27;
-        Log.d("Joed","Set frame data from timebar "+frameData);
+        kf2Pos = (int)(frameData.getKeyframe2().getTime()*1000);
+        kf3Pos = (int)(frameData.getKeyframe3().getTime()*1000);
+        kf4Pos = (int)(frameData.getKeyframe4().getTime()*1000);
+
+        kf2Time = kf2Pos-27;
+        kf3Time = kf3Pos-27;
+        kf4Time = kf4Pos-27;
+
+        for (Assessments obj : assessments) {
+            if ((new String(obj.getKey()).equals("keyframe2/kickleg/angles/u2v-i") || new String(obj.getKey()).equals("keyframe2/kickleg/angles/u2l-e")) && !new String(kf2Color).equals(danger)) {
+                Log.d("COLOR","COLOR="+kf2Color);
+                kf2Color = getColor(obj);
+            }
+            else if (new String(obj.getKey()).equals("keyframe3/ball")) {
+                kf3Color = getColor(obj);
+            }
+            else if (new String(obj.getKey()).equals("keyframe4/body/angles/h2v") || new String(obj.getKey()).equals("keyframe4/body/angles/b2v")) {
+                kf4Color = getColor(obj);
+            }
+        }
+    }
+
+    public String getColor(Assessments obj) {
+        if (new String(obj.getLabel()).equals("Poor")) {
+            return danger;
+        } else {
+            return success;
+        }
     }
 }

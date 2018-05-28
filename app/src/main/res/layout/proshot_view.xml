@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorPrimaryDark"
-    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/expand_ib"
         android:clickable="false"
-        android:padding="12dp"
+        android:padding="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -17,7 +17,7 @@
 
 
     <ImageView
-        android:padding="12dp"
+        android:padding="0dp"
         android:clickable="false"
         android:id="@+id/collapse_ib"
         android:layout_width="wrap_content"
@@ -26,5 +26,19 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/exo_controls_next" />
+
+    <RelativeLayout
+        android:id="@+id/layout_green"
+        android:layout_width="600dp"
+        android:layout_height="400dp"
+        android:layout_centerVertical="true">
+
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/ins_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    </RelativeLayout>
 
 </RelativeLayout>

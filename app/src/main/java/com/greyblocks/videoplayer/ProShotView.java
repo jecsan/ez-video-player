@@ -1,13 +1,17 @@
 package com.greyblocks.videoplayer;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import java.io.IOException;
 
 public class ProShotView extends RelativeLayout implements View.OnClickListener {
 
@@ -58,6 +62,16 @@ public class ProShotView extends RelativeLayout implements View.OnClickListener 
 //        expandBtn.setOnClickListener(this);
 //        collapseBtn.setOnClickListener(this);
         collapseBtn.setVisibility(View.GONE);
+
+        try {
+            Drawable d = Drawable.createFromStream(getContext().getAssets().open("ProShotKF2@2x.png"), null);
+            ImageView iw= (ImageView)findViewById(R.id.ins_img);
+            Log.d("ZZZ","ZZZ");
+            iw.setBackgroundDrawable(d);
+        } catch (IOException e) {
+
+        }
+
         super.setOnClickListener(this);
     }
 

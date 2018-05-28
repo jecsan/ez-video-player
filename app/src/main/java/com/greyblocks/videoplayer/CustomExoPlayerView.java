@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,6 +61,7 @@ import com.google.android.exoplayer2.video.VideoListener;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.List;
 
 import api.models.Assessments;
@@ -1203,7 +1205,7 @@ public class CustomExoPlayerView extends FrameLayout {
             final Display dis = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            DrawingController drawer = new DrawingController(dis, assessments,texttips);
+            DrawingController drawer = new DrawingController(dis, assessments,texttips, getContext());
 
             Point kf2Ap =new Point(frameData.getKeyframe2().getKickleg().getAp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getAp().get(1).intValue());
             Point kf2Hp =new Point(frameData.getKeyframe2().getKickleg().getHp().get(0).intValue(), frameData.getKeyframe2().getKickleg().getHp().get(1).intValue());
@@ -1244,8 +1246,17 @@ public class CustomExoPlayerView extends FrameLayout {
                 ll.setVisibility(LinearLayout.INVISIBLE);
             }
 
-
+            drawer.drawProshot();
             ll.setBackgroundDrawable(new BitmapDrawable(drawer.getBitmap()));
+//            try {
+//                Drawable d = Drawable.createFromStream(getContext().getAssets().open("ProShotKF2@2x.png"), null);
+//                ProShotView proView = (ProShotView) findViewById(R.id.pro_shot_view);
+//                Log.d("ZZZ","ZZZ");
+//                proView.setBackgroundDrawable(d);
+//            } catch (IOException e) {
+//
+//            }
+
         }
 
     }
@@ -1257,7 +1268,7 @@ public class CustomExoPlayerView extends FrameLayout {
         kf4Time = (int)(frameData.getKeyframe4().getTime()*1000)-27;
         this.assessments = assessments;
         this.texttips = texttips;
-        controller.getTimeBar().setFrameData(frameData);
+        controller.getTimeBar().setFrameData(frameData,assessments);
 //        controller
     }
 }

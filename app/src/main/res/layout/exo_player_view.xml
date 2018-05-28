@@ -24,37 +24,6 @@
             android:scaleType="fitXY"/>
 
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/drawing_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/dialog_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/kf4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
-
-
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/ts_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
-
-
         <com.google.android.exoplayer2.ui.SubtitleView android:id="@id/exo_subtitles"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -63,11 +32,10 @@
 
     <com.greyblocks.videoplayer.ProShotView
         android:id="@+id/pro_shot_view"
-        android:layout_above="@id/exo_controller_placeholder"
-        android:layout_toRightOf="@id/exo_content_frame"
+        android:layout_marginLeft="600dp"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toEndOf="@id/exo_content_frame" />
+        android:layout_height="match_parent"/>
 
 
 
