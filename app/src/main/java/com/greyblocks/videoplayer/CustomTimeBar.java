@@ -693,11 +693,11 @@ public class CustomTimeBar extends View implements TimeBar {
         String durationText = Double.toString(intPos);
 
         int playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right);
-        Log.d(TAG,"==============");
-        Log.d(TAG,"RIGHT="+scrubberBar.right);
-        Log.d(TAG,"LEFT="+scrubberBar.left);
-        Log.d(TAG,"PROG="+progressBar.right);
-        Log.d(TAG,"playheadX="+playheadX);
+//        Log.d(TAG,"==============");
+//        Log.d(TAG,"RIGHT="+scrubberBar.right);
+//        Log.d(TAG,"LEFT="+scrubberBar.left);
+//        Log.d(TAG,"PROG="+progressBar.right);
+//        Log.d(TAG,"playheadX="+playheadX);
 //        Log.d(TAG,"DURATION="+duration);
 //        Log.d(TAG,"==============");
 

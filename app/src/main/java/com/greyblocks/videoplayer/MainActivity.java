@@ -23,7 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -216,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         playerView.setPlayer(player);
         player.setSeekParameters(SeekParameters.EXACT);
         proShotView = playerView.findViewById(R.id.pro_shot_view);
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         AspectRatioFrameLayout aspectRatioFrameLayout = playerView.findViewById(R.id.exo_content_frame);
         final int collapsedWidth = (getResources().getDisplayMetrics().widthPixels- getResources().getDisplayMetrics().widthPixels/10);
         aspectRatioFrameLayout.getLayoutParams().width = collapsedWidth;
@@ -225,23 +227,36 @@ public class MainActivity extends AppCompatActivity {
 
 
         proShotView.getLayoutParams().height = (displayMetrics.heightPixels-(displayMetrics.heightPixels/6));
+//        proShotView.getLayoutParams().width =1615;
+
 
         proShotView.setProShotAction(new ProShotView.ProShotAction() {
             @Override
             public void onExpand() {
-                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
-                resizeWidthAnimation.setDuration(200);
-                playerView.setX(-200);
-                playerView.startAnimation(resizeWidthAnimation);
+                final View exoContentFrame = playerView.findViewById(R.id.exo_content_frame);
+//                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
+//                resizeWidthAnimation.setDuration(200);
+//                playerView.startAnimation(resizeWidthAnimation);
+                TranslateAnimation translateAnimation  = new TranslateAnimation(exoContentFrame.getX(), -(displayMetrics.widthPixels/2.6f),exoContentFrame.getY(),exoContentFrame.getY());
+                translateAnimation.setDuration(200);
+                translateAnimation.setFillAfter(true);
+                exoContentFrame.startAnimation(translateAnimation);
 
             }
 
             @Override
             public void onCollapse() {
-                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame),
-                        collapsedWidth);
-                resizeWidthAnimation.setDuration(200);
-                playerView.startAnimation(resizeWidthAnimation);
+                final View exoContentFrame = playerView.findViewById(R.id.exo_content_frame);
+//                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame),
+//                        collapsedWidth);
+//                resizeWidthAnimation.setDuration(200);
+                TranslateAnimation translateAnimation  = new TranslateAnimation( -(displayMetrics.widthPixels/2.6f), 0,exoContentFrame.getY(),exoContentFrame.getY());
+                translateAnimation.setDuration(200);
+                translateAnimation.setFillAfter(true);
+                exoContentFrame.startAnimation(translateAnimation);
+//                playerView.setAnimation(translateAnimation);
+//                playerView.animate();
+//                playerView.startAnimation(resizeWidthAnimation);
 
             }
         });

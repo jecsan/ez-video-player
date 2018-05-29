@@ -1,5 +1,6 @@
 package com.greyblocks.videoplayer;
 
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -25,6 +26,7 @@ public class ResizeWidthAnimation extends Animation {
         int newWidth = mStartWidth + (int) ((mWidth - mStartWidth) * interpolatedTime);
 
         mView.getLayoutParams().width = newWidth;
+        Log.d("Joed","New width:"+newWidth);
         mView.requestLayout();
     }
 
