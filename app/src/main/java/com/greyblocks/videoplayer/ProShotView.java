@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -15,6 +16,7 @@ public class ProShotView extends RelativeLayout implements View.OnClickListener 
     private ProShotAction proShotAction;
     private ImageView expandBtn;
     private ImageView collapseBtn;
+    private int halfScreenWidth;
 
 
     public void setProShotAction(ProShotAction proShotAction) {
@@ -52,6 +54,7 @@ public class ProShotView extends RelativeLayout implements View.OnClickListener 
     }
 
     private void init() {
+        halfScreenWidth = getContext().getResources().getDisplayMetrics().widthPixels/2;
         inflate(getContext(), R.layout.proshot_view, this);
         expandBtn = findViewById(R.id.expand_ib);
         collapseBtn = findViewById(R.id.collapse_ib);
@@ -99,4 +102,34 @@ public class ProShotView extends RelativeLayout implements View.OnClickListener 
         }
 
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int chosenDimension = resolveSize(halfScreenWidth, heightMeasureSpec);
+
+        widthMeasureSpec = MeasureSpec.makeMeasureSpec(chosenDimension, MeasureSpec.AT_MOST);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(chosenDimension, MeasureSpec.AT_MOST);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private int reconcileSize(int contentSize, int measureSpec) {
+        final int mode = MeasureSpec.getMode(measureSpec);
+        final int specSize = MeasureSpec.getSize(measureSpec);
+        switch(mode) {
+            case MeasureSpec.EXACTLY:
+                return specSize;
+            case MeasureSpec.AT_MOST:
+                if (contentSize < specSize) {
+                    return contentSize;
+                } else {
+                    return specSize;
+                }
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                return contentSize;
+        }
+    }
+
 }

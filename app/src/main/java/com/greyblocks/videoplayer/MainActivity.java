@@ -237,10 +237,11 @@ public class MainActivity extends AppCompatActivity {
 //                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame), playerView.getWidth()/2);
 //                resizeWidthAnimation.setDuration(200);
 //                playerView.startAnimation(resizeWidthAnimation);
-                TranslateAnimation translateAnimation  = new TranslateAnimation(exoContentFrame.getX(), -(displayMetrics.widthPixels/2.6f),exoContentFrame.getY(),exoContentFrame.getY());
+                TranslateAnimation translateAnimation  = new TranslateAnimation(exoContentFrame.getX(), -(displayMetrics.widthPixels/2.5f),exoContentFrame.getY(),exoContentFrame.getY());
                 translateAnimation.setDuration(200);
                 translateAnimation.setFillAfter(true);
                 exoContentFrame.startAnimation(translateAnimation);
+                proShotView.startAnimation(translateAnimation);
 
             }
 
@@ -250,10 +251,11 @@ public class MainActivity extends AppCompatActivity {
 //                ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(playerView.findViewById(R.id.exo_content_frame),
 //                        collapsedWidth);
 //                resizeWidthAnimation.setDuration(200);
-                TranslateAnimation translateAnimation  = new TranslateAnimation( -(displayMetrics.widthPixels/2.6f), 0,exoContentFrame.getY(),exoContentFrame.getY());
+                TranslateAnimation translateAnimation  = new TranslateAnimation( -(displayMetrics.widthPixels/2.5f), 0,exoContentFrame.getY(),exoContentFrame.getY());
                 translateAnimation.setDuration(200);
                 translateAnimation.setFillAfter(true);
                 exoContentFrame.startAnimation(translateAnimation);
+                proShotView.startAnimation(translateAnimation);
 //                playerView.setAnimation(translateAnimation);
 //                playerView.animate();
 //                playerView.startAnimation(resizeWidthAnimation);
